@@ -8,14 +8,18 @@ const APPLE_SIZE = BLOCK_SIZE - APPLE_BORDER_WIDTH * 2;
 class Apples {
   apples = [];
 
-  add = (apples) => {
-    this.apples.push(...apples);
+  set = (apples) => {
+    this.apples = apples;
   };
 
   replace = (apple, newApple) => {
     const index = this.apples.findIndex(({ x, y }) => x === apple.x && y === apple.y);
     this.apples[index] = newApple;
   };
+
+  clear() {
+    this.apples = [];
+  }
 
   draw(ctx) {
     this.apples.forEach(({ x, y }) => {
