@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Snake Remake</title>
+  </head>
+  <body>
+    <div id="home-page">
+      <h1 id="game-title">Snake Remake</h1>
+      <input
+        type="text"
+        id="username-input"
+        placeholder="username"
+        maxlength="16"
+        autocomplete="off"
+        autofocus
+      />
+      <button id="btn-play" disabled>
+        <div id="loader" hidden></div>
+        <img src="play_arrow.svg" id="btn-play-icon" />
+        <span>Play</span>
+      </button>
+    </div>
+
+    <div id="game-page" hidden>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script
+      src="https://cdn.socket.io/4.7.4/socket.io.min.js"
+      integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4"
+      crossorigin="anonymous"
+    ></script>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
