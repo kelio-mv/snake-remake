@@ -1,5 +1,6 @@
 import {
   BLOCK_SIZE,
+  MAP_BOUNDARY,
   PLAYER_INITIAL_LENGTH,
   PLAYER_INITIAL_POSITION,
   PLAYER_INITIAL_DIRECTION,
@@ -41,14 +42,19 @@ class LocalPlayer {
     this.body.pop();
 
     const head = this.body[0];
-    const move = {
+    const moveHead = {
       up: () => (head.y -= BLOCK_SIZE),
       down: () => (head.y += BLOCK_SIZE),
       left: () => (head.x -= BLOCK_SIZE),
       right: () => (head.x += BLOCK_SIZE),
     }[this.direction];
+    moveHead();
 
-    move();
+    if (head.x > MAP_BOUNDARY) head.x = 0;
+    else if (head.x < 0) head.x = MAP_BOUNDARY;
+    if (head.y > MAP_BOUNDARY) head.y = 0;
+    else if (head.y < 0) head.y = MAP_BOUNDARY;
+
     this.sendState();
     this.canChangeDirection = true;
   }

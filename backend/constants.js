@@ -1,6 +1,6 @@
-const BLOCK_SIZE = 14;
-const MAP_SIZE = 140;
-const UPDATE_INTERVAL = 1 / 20;
+const BLOCK_SIZE = 12;
+const MAP_SIZE = 60;
+const UPDATE_INTERVAL = 1 / 15;
 const PLAYER_INITIAL_LENGTH = 3;
 const PLAYER_INITIAL_POSITION = {
   x: Math.floor(MAP_SIZE / 2) * BLOCK_SIZE,
