@@ -12,35 +12,13 @@ const background = new Background();
 const localPlayer = new LocalPlayer(socket);
 const remotePlayers = new RemotePlayers();
 const apples = new Apples();
+const audio = {
+  backgroundMusic: new Audio("assets/background-music.mp3"),
+  increaseLength: new Audio("assets/increase-length.mp3"),
+  respawn: new Audio("assets/respawn.mp3"),
+};
 let lastUpdateTime;
 let running = false;
-
-window.onresize = resize;
-// window.onblur = () => {
-//   socket.emit("blur");
-//   outdated = true;
-// };
-window.onfocus = () => {
-  lastUpdateTime = Date.now() / 1000;
-  // socket.emit("focus", (localPlayerState) => {
-  //   localPlayer.setState(localPlayerState);
-  //   lastUpdateTime = Date.now() / 1000;
-  //   outdated = false;
-  // });
-};
-
-socket.on("update_player", remotePlayers.setState);
-socket.on("replace_apple", (apple, newApple, increaseLength) => {
-  apples.replace(apple, newApple);
-  if (increaseLength) localPlayer.increaseLength();
-});
-socket.on("respawn", localPlayer.respawn);
-socket.on("player_disconnect", remotePlayers.removePlayer);
-
-canvas.width = BLOCK_SIZE * MAP_SIZE;
-canvas.height = BLOCK_SIZE * MAP_SIZE;
-
-resize();
 
 function resize() {
   const widthScale = innerWidth / canvas.width;
@@ -70,23 +48,67 @@ function update() {
 
 function handleConnect() {
   gamePage.hidden = false;
+  audio.backgroundMusic.play();
   socket.emit("get_apples", apples.set);
   lastUpdateTime = Date.now() / 1000;
   running = true;
   update();
 }
+
 function handleDisconnect() {
-  running = false;
+  gamePage.hidden = true;
+  audio.backgroundMusic.pause();
   localPlayer.respawn();
   apples.clear();
-  gamePage.hidden = true;
+  running = false;
 }
+
+window.onresize = resize;
+// window.onblur = () => {
+//   socket.emit("blur");
+//   outdated = true;
+// };
+window.onfocus = () => {
+  lastUpdateTime = Date.now() / 1000;
+  // socket.emit("focus", (localPlayerState) => {
+  //   localPlayer.setState(localPlayerState);
+  //   lastUpdateTime = Date.now() / 1000;
+  //   outdated = false;
+  // });
+};
+
+socket.on("update_player", (player) => {
+  remotePlayers.setState(player);
+  if (player.protected) {
+    audio.respawn.currentTime = 0;
+    audio.respawn.play();
+  }
+});
+socket.on("replace_apple", (apple, newApple, increaseLength) => {
+  apples.replace(apple, newApple);
+  if (increaseLength) localPlayer.increaseLength();
+  audio.increaseLength.currentTime = 0;
+  audio.increaseLength.play();
+});
+socket.on("respawn", () => {
+  localPlayer.respawn();
+  audio.respawn.currentTime = 0;
+  audio.respawn.play();
+});
+socket.on("player_disconnect", remotePlayers.removePlayer);
+
+audio.backgroundMusic.volume = 0.5;
+audio.backgroundMusic.loop = true;
+
+canvas.width = BLOCK_SIZE * MAP_SIZE;
+canvas.height = BLOCK_SIZE * MAP_SIZE;
+
+resize();
 
 export { handleConnect, handleDisconnect };
 
 /*
-otimizar transferência de dados de jogador
-adicionar sons/música
-adicionar scoreboard
+favicon
+remover username
 adicionar bots
 */

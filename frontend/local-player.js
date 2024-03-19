@@ -105,7 +105,7 @@ class LocalPlayer extends Player {
     this.body.push({ ...lastElement });
   }
 
-  respawn = () => {
+  respawn() {
     this.body = Array.from({ length: PLAYER_INITIAL_LENGTH }, () => PLAYER_INITIAL_POSITION);
     this.direction = PLAYER_INITIAL_DIRECTION;
     this.protected = true;
@@ -114,14 +114,10 @@ class LocalPlayer extends Player {
       this.protected = false;
       this.socket.emit("update_player", { protected: false });
     }, 1000);
-  };
+  }
 
   sendState(state) {
     this.socket.emit("update_player", { body: this.body, direction: this.direction, ...state });
-  }
-
-  draw(ctx) {
-    super.draw(ctx);
   }
 }
 

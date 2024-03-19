@@ -3,7 +3,7 @@ import Player from "./player.js";
 class RemotePlayers {
   players = [];
 
-  setState = ({ username, ...state }) => {
+  setState({ username, ...state }) {
     let player = this.players.find((player) => player.username === username);
 
     if (player) {
@@ -13,7 +13,7 @@ class RemotePlayers {
       player.setState(state);
       this.players.push(player);
     }
-  };
+  }
 
   removePlayer = (username) => {
     const index = this.players.findIndex((player) => player.username === username);
