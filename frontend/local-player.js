@@ -1,4 +1,6 @@
 import Player from "./player.js";
+import socket from "./socket.js";
+
 import {
   BLOCK_SIZE,
   MAP_BOUNDARY,
@@ -27,9 +29,8 @@ class LocalPlayer extends Player {
   protected = false;
   touchStart = { x: null, y: null };
 
-  constructor(socket) {
+  constructor() {
     super(true);
-    this.socket = socket;
     addEventListener("keydown", this.handleKeyDown);
     addEventListener("touchstart", this.handleTouchStart);
     addEventListener("touchmove", this.handleTouchMove);
@@ -112,12 +113,12 @@ class LocalPlayer extends Player {
     this.sendState({ protected: true });
     setTimeout(() => {
       this.protected = false;
-      this.socket.emit("update_player", { protected: false });
+      socket.emit("update_player", { protected: false });
     }, 1000);
   }
 
   sendState(state) {
-    this.socket.emit("update_player", { body: this.body, direction: this.direction, ...state });
+    socket.emit("update_player", { body: this.body, direction: this.direction, ...state });
   }
 }
 

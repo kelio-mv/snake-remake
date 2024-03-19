@@ -1,4 +1,5 @@
 import { BLOCK_SIZE } from "./constants.js";
+import usernameInput from "./main.js";
 
 const PLAYER_BLOCK_MARGIN = 1;
 const PLAYER_BLOCK_SIZE = BLOCK_SIZE - PLAYER_BLOCK_MARGIN * 2;
@@ -34,6 +35,14 @@ class Player {
       head.y + PLAYER_BLOCK_MARGIN,
       PLAYER_BLOCK_SIZE,
       PLAYER_BLOCK_SIZE
+    );
+    ctx.font = "16px 'Silkscreen', system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.letterSpacing = "-1px";
+    ctx.fillText(
+      this.local ? usernameInput.value : this.username,
+      head.x + BLOCK_SIZE / 2,
+      head.y - BLOCK_SIZE
     );
     ctx.globalAlpha = 1;
   }

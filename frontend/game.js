@@ -9,7 +9,7 @@ const gamePage = document.getElementById("game-page");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const background = new Background();
-const localPlayer = new LocalPlayer(socket);
+const localPlayer = new LocalPlayer();
 const remotePlayers = new RemotePlayers();
 const apples = new Apples();
 const audio = {
@@ -108,7 +108,8 @@ resize();
 export { handleConnect, handleDisconnect };
 
 /*
-favicon
-remover username
+bug do nome igual
+ajeitar bug do blur
+sons na tela inicial
 adicionar bots
 */

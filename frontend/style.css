@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Gantari:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen&display=swap");
 
 * {
   box-sizing: border-box;
@@ -22,7 +22,7 @@ body,
 
 :root {
   color-scheme: dark;
-  font-family: "Gantari", sans-serif;
+  font-family: "Silkscreen", system-ui, sans-serif;
   line-height: 1.25;
   color: white;
 }
@@ -43,6 +43,7 @@ body {
   font-size: 2.5rem;
   font-weight: 500;
   margin-bottom: 4rem;
+  letter-spacing: -2px;
 }
 
 #username-input {
@@ -51,6 +52,7 @@ body {
   width: 13rem;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
+  letter-spacing: -1px;
 }
 
 #username-input::placeholder {
@@ -68,6 +70,7 @@ body {
   border-radius: 0.25rem;
   font-size: 1.25rem;
   cursor: pointer;
+  letter-spacing: -1px;
 }
 
 #btn-play:hover {
@@ -77,25 +80,6 @@ body {
 #btn-play:disabled {
   pointer-events: none;
   opacity: 0.5;
-}
-
-#loader {
-  width: 1rem;
-  height: 1rem;
-  margin: 0 0.25rem;
-  border: 3px solid white;
-  border-top: 3px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 #game-page {
