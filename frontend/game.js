@@ -85,10 +85,7 @@ function handleDisconnect() {
 export { handleConnect, handleDisconnect };
 
 /*
-resolver bug no reconnect
-mudar cor dos oponentes
 otimizar transferência de dados de jogador
-criar classe player
 adicionar sons/música
 adicionar scoreboard
 adicionar bots

@@ -1,3 +1,4 @@
+import Player from "./player.js";
 import {
   BLOCK_SIZE,
   MAP_BOUNDARY,
@@ -6,10 +7,6 @@ import {
   PLAYER_INITIAL_DIRECTION,
 } from "./constants.js";
 
-const PLAYER_HEAD_COLOR = "#e5e7eb";
-const PLAYER_BODY_COLOR = "#6b7280";
-const PLAYER_BLOCK_MARGIN = 1;
-const PLAYER_BLOCK_SIZE = BLOCK_SIZE - PLAYER_BLOCK_MARGIN * 2;
 const DIRECTIONS = {
   arrowup: "up",
   arrowdown: "down",
@@ -23,7 +20,7 @@ const DIRECTIONS = {
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 const MOVEMENT_KEYS = Object.keys(DIRECTIONS);
 
-class LocalPlayer {
+class LocalPlayer extends Player {
   body = Array.from({ length: PLAYER_INITIAL_LENGTH }, () => PLAYER_INITIAL_POSITION);
   direction = PLAYER_INITIAL_DIRECTION;
   canChangeDirection = true;
@@ -31,6 +28,7 @@ class LocalPlayer {
   touchStart = { x: null, y: null };
 
   constructor(socket) {
+    super(true);
     this.socket = socket;
     addEventListener("keydown", this.handleKeyDown);
     addEventListener("touchstart", this.handleTouchStart);
@@ -57,28 +55,6 @@ class LocalPlayer {
 
     this.sendState();
     this.canChangeDirection = true;
-  }
-
-  draw(ctx) {
-    if (this.protected) ctx.globalAlpha = 0.5;
-    const [head, ...body] = this.body;
-    ctx.fillStyle = PLAYER_BODY_COLOR;
-    body.forEach(({ x, y }) =>
-      ctx.fillRect(
-        x + PLAYER_BLOCK_MARGIN,
-        y + PLAYER_BLOCK_MARGIN,
-        PLAYER_BLOCK_SIZE,
-        PLAYER_BLOCK_SIZE
-      )
-    );
-    ctx.fillStyle = PLAYER_HEAD_COLOR;
-    ctx.fillRect(
-      head.x + PLAYER_BLOCK_MARGIN,
-      head.y + PLAYER_BLOCK_MARGIN,
-      PLAYER_BLOCK_SIZE,
-      PLAYER_BLOCK_SIZE
-    );
-    ctx.globalAlpha = 1;
   }
 
   handleKeyDown = ({ key }) => {
@@ -144,8 +120,8 @@ class LocalPlayer {
     this.socket.emit("update_player", { body: this.body, direction: this.direction, ...state });
   }
 
-  setState(state) {
-    Object.assign(this, state);
+  draw(ctx) {
+    super.draw(ctx);
   }
 }
 
