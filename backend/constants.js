@@ -1,5 +1,5 @@
 const BLOCK_SIZE = 16;
-const MAP_WIDTH = 60;
+const MAP_WIDTH = 80;
 const MAP_HEIGHT = 45;
 const UPDATE_INTERVAL = 1 / 15;
 const PLAYER_INITIAL_LENGTH = 3;
