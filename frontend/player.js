@@ -3,10 +3,8 @@ import usernameInput from "./main.js";
 
 const PLAYER_BLOCK_MARGIN = 1;
 const PLAYER_BLOCK_SIZE = BLOCK_SIZE - PLAYER_BLOCK_MARGIN * 2;
-const LOCAL_PLAYER_HEAD_COLOR = "#bfdbfe";
-const LOCAL_PLAYER_BODY_COLOR = "#3b82f6";
-const REMOTE_PLAYER_HEAD_COLOR = "#e5e7eb";
-const REMOTE_PLAYER_BODY_COLOR = "#6b7280";
+const LOCAL_PLAYER_COLOR = "#60a5fa";
+const REMOTE_PLAYER_COLOR = "#9ca3af";
 
 class Player {
   constructor(local) {
@@ -19,9 +17,8 @@ class Player {
 
   draw(ctx) {
     if (this.protected) ctx.globalAlpha = 0.5;
-    const [head, ...body] = this.body;
-    ctx.fillStyle = this.local ? LOCAL_PLAYER_BODY_COLOR : REMOTE_PLAYER_BODY_COLOR;
-    body.forEach(({ x, y }) =>
+    ctx.fillStyle = this.local ? LOCAL_PLAYER_COLOR : REMOTE_PLAYER_COLOR;
+    this.body.forEach(({ x, y }) =>
       ctx.fillRect(
         x + PLAYER_BLOCK_MARGIN,
         y + PLAYER_BLOCK_MARGIN,
@@ -29,13 +26,8 @@ class Player {
         PLAYER_BLOCK_SIZE
       )
     );
-    ctx.fillStyle = this.local ? LOCAL_PLAYER_HEAD_COLOR : REMOTE_PLAYER_HEAD_COLOR;
-    ctx.fillRect(
-      head.x + PLAYER_BLOCK_MARGIN,
-      head.y + PLAYER_BLOCK_MARGIN,
-      PLAYER_BLOCK_SIZE,
-      PLAYER_BLOCK_SIZE
-    );
+
+    const head = this.body[0];
     ctx.font = "16px 'Silkscreen', system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.letterSpacing = "-1px";

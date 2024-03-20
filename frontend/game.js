@@ -3,7 +3,7 @@ import LocalPlayer from "./local-player.js";
 import RemotePlayers from "./remote-players.js";
 import Apples from "./apples.js";
 import socket from "./socket.js";
-import { BLOCK_SIZE, MAP_SIZE, UPDATE_INTERVAL } from "./constants.js";
+import { BLOCK_SIZE, MAP_WIDTH, MAP_HEIGHT, UPDATE_INTERVAL } from "./constants.js";
 
 const gamePage = document.getElementById("game-page");
 const canvas = document.getElementById("canvas");
@@ -47,6 +47,8 @@ function update() {
 
 function handleConnect() {
   gamePage.hidden = false;
+  document.documentElement.requestFullscreen();
+  screen.orientation.lock("landscape");
   socket.emit("get_apples", apples.set);
   lastUpdateTime = Date.now() / 1000;
   running = true;
@@ -94,8 +96,8 @@ socket.on("respawn", () => {
 });
 socket.on("player_disconnect", remotePlayers.removePlayer);
 
-canvas.width = BLOCK_SIZE * MAP_SIZE;
-canvas.height = BLOCK_SIZE * MAP_SIZE;
+canvas.width = BLOCK_SIZE * MAP_WIDTH;
+canvas.height = BLOCK_SIZE * MAP_HEIGHT;
 
 resize();
 

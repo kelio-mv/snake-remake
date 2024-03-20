@@ -3,10 +3,11 @@ import socket from "./socket.js";
 
 import {
   BLOCK_SIZE,
-  MAP_BOUNDARY,
   PLAYER_INITIAL_LENGTH,
   PLAYER_INITIAL_POSITION,
   PLAYER_INITIAL_DIRECTION,
+  PLAYER_MAX_X,
+  PLAYER_MAX_Y,
 } from "./constants.js";
 
 const DIRECTIONS = {
@@ -49,10 +50,10 @@ class LocalPlayer extends Player {
     }[this.direction];
     moveHead();
 
-    if (head.x > MAP_BOUNDARY) head.x = 0;
-    else if (head.x < 0) head.x = MAP_BOUNDARY;
-    if (head.y > MAP_BOUNDARY) head.y = 0;
-    else if (head.y < 0) head.y = MAP_BOUNDARY;
+    if (head.x > PLAYER_MAX_X) head.x = 0;
+    else if (head.x < 0) head.x = PLAYER_MAX_X;
+    if (head.y > PLAYER_MAX_Y) head.y = 0;
+    else if (head.y < 0) head.y = PLAYER_MAX_Y;
 
     this.sendState();
     this.canChangeDirection = true;

@@ -1,9 +1,8 @@
 import { BLOCK_SIZE } from "./constants.js";
 
 const APPLE_COLOR = "#dc2626";
-const APPLE_BORDER_COLOR = "#450a0a";
-const APPLE_BORDER_WIDTH = 1;
-const APPLE_SIZE = BLOCK_SIZE - APPLE_BORDER_WIDTH * 2;
+const APPLE_MARGIN = 1;
+const APPLE_SIZE = BLOCK_SIZE - APPLE_MARGIN * 2;
 
 class Apples {
   apples = [];
@@ -23,10 +22,8 @@ class Apples {
 
   draw(ctx) {
     this.apples.forEach(({ x, y }) => {
-      ctx.fillStyle = APPLE_BORDER_COLOR;
-      ctx.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
       ctx.fillStyle = APPLE_COLOR;
-      ctx.fillRect(x + APPLE_BORDER_WIDTH, y + APPLE_BORDER_WIDTH, APPLE_SIZE, APPLE_SIZE);
+      ctx.fillRect(x + APPLE_MARGIN, y + APPLE_MARGIN, APPLE_SIZE, APPLE_SIZE);
     });
   }
 }
