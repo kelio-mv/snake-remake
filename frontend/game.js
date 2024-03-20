@@ -12,8 +12,7 @@ const background = new Background();
 const localPlayer = new LocalPlayer();
 const remotePlayers = new RemotePlayers();
 const apples = new Apples();
-const audio = {
-  backgroundMusic: new Audio("assets/background-music.mp3"),
+const sounds = {
   increaseLength: new Audio("assets/increase-length.mp3"),
   respawn: new Audio("assets/respawn.mp3"),
 };
@@ -48,7 +47,6 @@ function update() {
 
 function handleConnect() {
   gamePage.hidden = false;
-  audio.backgroundMusic.play();
   socket.emit("get_apples", apples.set);
   lastUpdateTime = Date.now() / 1000;
   running = true;
@@ -57,7 +55,6 @@ function handleConnect() {
 
 function handleDisconnect() {
   gamePage.hidden = true;
-  audio.backgroundMusic.pause();
   localPlayer.respawn();
   apples.clear();
   running = false;
@@ -80,25 +77,22 @@ window.onfocus = () => {
 socket.on("update_player", (player) => {
   remotePlayers.setState(player);
   if (player.protected) {
-    audio.respawn.currentTime = 0;
-    audio.respawn.play();
+    sounds.respawn.currentTime = 0;
+    sounds.respawn.play();
   }
 });
 socket.on("replace_apple", (apple, newApple, increaseLength) => {
   apples.replace(apple, newApple);
   if (increaseLength) localPlayer.increaseLength();
-  audio.increaseLength.currentTime = 0;
-  audio.increaseLength.play();
+  sounds.increaseLength.currentTime = 0;
+  sounds.increaseLength.play();
 });
 socket.on("respawn", () => {
   localPlayer.respawn();
-  audio.respawn.currentTime = 0;
-  audio.respawn.play();
+  sounds.respawn.currentTime = 0;
+  sounds.respawn.play();
 });
 socket.on("player_disconnect", remotePlayers.removePlayer);
-
-audio.backgroundMusic.volume = 0.5;
-audio.backgroundMusic.loop = true;
 
 canvas.width = BLOCK_SIZE * MAP_SIZE;
 canvas.height = BLOCK_SIZE * MAP_SIZE;
@@ -107,9 +101,4 @@ resize();
 
 export { handleConnect, handleDisconnect };
 
-/*
-bug do nome igual
-ajeitar bug do blur
-sons na tela inicial
-adicionar bots
-*/
+/* consertar bug do desfoque */

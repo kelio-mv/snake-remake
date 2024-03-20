@@ -7,16 +7,24 @@ const io = new Server(port, { cors: { origin: "*" } });
 const apples = new Apples();
 let lastUpdateTime = Date.now() / 1000;
 
+function sockets() {
+  return Array.from(io.of("/").sockets).map(([_, socket]) => socket);
+}
+
 function socketsExcept(socket) {
-  const sockets = Array.from(io.of("/").sockets).map(([_, socket]) => socket);
-  return sockets.filter((s) => s !== socket);
+  return sockets().filter((s) => s !== socket);
 }
 
 io.use((socket, next) => {
   const { username } = socket.handshake.auth;
-  socket.player = new Player(username);
-  console.log(username, "joined the game");
-  next();
+
+  if (sockets().find((_socket) => _socket.player.username === username)) {
+    next(new Error("auth error"));
+  } else {
+    socket.player = new Player(username);
+    console.log(username, "joined the game");
+    next();
+  }
 });
 
 io.on("connection", (socket) => {
