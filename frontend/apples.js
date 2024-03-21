@@ -7,8 +7,8 @@ const APPLE_SIZE = BLOCK_SIZE - APPLE_MARGIN * 2;
 class Apples {
   apples = [];
 
-  set = (apples) => {
-    this.apples = apples;
+  add = (apples) => {
+    this.apples.push(...apples);
   };
 
   replace = (apple, newApple) => {

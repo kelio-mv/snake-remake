@@ -49,7 +49,6 @@ function handleConnect() {
   gamePage.hidden = false;
   document.documentElement.requestFullscreen();
   screen.orientation.lock("landscape");
-  socket.emit("get_apples", apples.set);
   lastUpdateTime = Date.now() / 1000;
   running = true;
   update();
@@ -72,6 +71,7 @@ window.onfocus = () => {
   }
 };
 
+socket.on("add_apples", apples.add);
 socket.on("update_player", (player) => {
   remotePlayers.setState(player);
   if (player.protected) {

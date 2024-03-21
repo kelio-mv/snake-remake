@@ -1,5 +1,4 @@
 const { BLOCK_SIZE, MAP_WIDTH, MAP_HEIGHT } = require("./constants");
-const APPLE_QUANTITY = 16;
 
 function randint(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -9,24 +8,24 @@ class Apples {
   apples = [];
 
   constructor() {
-    for (let n = 0; n < APPLE_QUANTITY; n++) {
-      this.apples.push(this.create());
-    }
+    this.apples.push(this.create());
   }
 
   get() {
     return this.apples;
   }
 
+  add(apples) {
+    this.apples.push(...apples);
+  }
+
   create = () => {
     const [x, y] = [randint(1, MAP_WIDTH - 2), randint(1, MAP_HEIGHT - 2)];
     const apple = { x: x * BLOCK_SIZE, y: y * BLOCK_SIZE };
-
     if (this.apples.some(({ x, y }) => x === apple.x && y === apple.y)) {
       return this.create();
-    } else {
-      return apple;
     }
+    return apple;
   };
 
   replace(apple) {

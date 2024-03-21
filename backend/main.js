@@ -38,16 +38,23 @@ io.on("connection", (socket) => {
 
     for (const _socket of socketsExcept(socket)) {
       const opponent = _socket.player;
+      if (!opponent.body) continue;
 
       for (const [index, point] of opponent.body.entries()) {
         if (player.collide(point)) {
           if (!player.protected) {
             player.protected = true;
+            const playerApples = player.getApples();
+            apples.add(playerApples);
             socket.emit("respawn");
+            io.emit("add_apples", playerApples);
           }
           if (index === 0 && !opponent.protected) {
             opponent.protected = true;
+            const opponentApples = opponent.getApples();
+            apples.add(opponentApples);
             _socket.emit("respawn");
+            io.emit("add_apples", opponentApples);
           }
           return;
         }
