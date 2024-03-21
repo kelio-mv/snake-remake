@@ -14,6 +14,10 @@ class Apples {
     }
   }
 
+  get() {
+    return this.apples;
+  }
+
   create = () => {
     const [x, y] = [randint(1, MAP_WIDTH - 2), randint(1, MAP_HEIGHT - 2)];
     const apple = { x: x * BLOCK_SIZE, y: y * BLOCK_SIZE };

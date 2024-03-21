@@ -63,17 +63,13 @@ function handleDisconnect() {
 }
 
 window.onresize = resize;
-// window.onblur = () => {
-//   socket.emit("blur");
-//   outdated = true;
-// };
 window.onfocus = () => {
-  lastUpdateTime = Date.now() / 1000;
-  // socket.emit("focus", (localPlayerState) => {
-  //   localPlayer.setState(localPlayerState);
-  //   lastUpdateTime = Date.now() / 1000;
-  //   outdated = false;
-  // });
+  const now = Date.now() / 1000;
+  const deltaTime = now - lastUpdateTime;
+
+  if (deltaTime >= 2 * UPDATE_INTERVAL) {
+    lastUpdateTime = Date.now() / 1000;
+  }
 };
 
 socket.on("update_player", (player) => {
@@ -102,5 +98,3 @@ canvas.height = BLOCK_SIZE * MAP_HEIGHT;
 resize();
 
 export { handleConnect, handleDisconnect };
-
-/* consertar bug do desfoque */

@@ -5,7 +5,6 @@ const Apples = require("./apples");
 const port = process.env.PORT || 3000;
 const io = new Server(port, { cors: { origin: "*" } });
 const apples = new Apples();
-let lastUpdateTime = Date.now() / 1000;
 
 function sockets() {
   return Array.from(io.of("/").sockets).map(([_, socket]) => socket);
@@ -29,7 +28,7 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   socket.on("get_apples", (callback) => {
-    callback(apples.apples);
+    callback(apples.get());
   });
 
   socket.on("update_player", (state) => {
@@ -55,7 +54,7 @@ io.on("connection", (socket) => {
       }
     }
 
-    for (const apple of apples.apples) {
+    for (const apple of apples.get()) {
       if (player.collide(apple)) {
         const newApple = apples.replace(apple);
         socket.emit("replace_apple", apple, newApple, true);
@@ -65,34 +64,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("blur", () => {
-    socket.player.unfocused = true;
-  });
-
-  socket.on("focus", (callback) => {
-    const { player } = socket;
-    player.unfocused = false;
-    callback(player);
-  });
-
   socket.on("disconnect", () => {
     socket.broadcast.emit("player_disconnect", socket.player.username);
   });
 });
-
-// setInterval(() => {
-//   const now = Date.now() / 1000;
-//   const deltaTime = now - lastUpdateTime;
-
-//   if (deltaTime > UPDATE_INTERVAL) {
-//     players.sockets.forEach((socket) => {
-//       const { player } = socket;
-//       player.update(players.sockets);
-
-//     });
-
-//     lastUpdateTime += UPDATE_INTERVAL;
-//   }
-// });
 
 console.log(`Server is running on port ${port}`);
