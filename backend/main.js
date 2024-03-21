@@ -65,7 +65,12 @@ io.on("connection", (socket) => {
 
     for (const apple of apples.get()) {
       if (player.collide(apple)) {
-        const newApple = apples.replace(apple);
+        let newApple;
+        if (apples.quantity === 1) {
+          newApple = apples.replace(apple);
+        } else {
+          apples.destroy(apple);
+        }
         socket.emit("replace_apple", apple, newApple, true);
         socket.broadcast.emit("replace_apple", apple, newApple);
         break;

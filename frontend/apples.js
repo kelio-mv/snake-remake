@@ -16,6 +16,11 @@ class Apples {
     this.apples[index] = newApple;
   };
 
+  destroy(apple) {
+    const index = this.apples.findIndex(({ x, y }) => x === apple.x && y === apple.y);
+    this.apples.splice(index, 1);
+  }
+
   clear() {
     this.apples = [];
   }

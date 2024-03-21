@@ -11,6 +11,10 @@ class Apples {
     this.apples.push(this.create());
   }
 
+  get quantity() {
+    return this.apples.length;
+  }
+
   get() {
     return this.apples;
   }
@@ -33,6 +37,11 @@ class Apples {
     const newApple = this.create();
     this.apples[index] = newApple;
     return newApple;
+  }
+
+  destroy(apple) {
+    const index = this.apples.indexOf(apple);
+    this.apples.splice(index, 1);
   }
 }
 

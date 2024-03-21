@@ -80,8 +80,14 @@ socket.on("update_player", (player) => {
   }
 });
 socket.on("replace_apple", (apple, newApple, increaseLength) => {
-  apples.replace(apple, newApple);
-  if (increaseLength) localPlayer.increaseLength();
+  if (newApple) {
+    apples.replace(apple, newApple);
+  } else {
+    apples.destroy(apple);
+  }
+  if (increaseLength) {
+    localPlayer.increaseLength();
+  }
   sounds.increaseLength.currentTime = 0;
   sounds.increaseLength.play();
 });
