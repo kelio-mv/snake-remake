@@ -7,6 +7,10 @@ class Player {
     this.username = username;
   }
 
+  get apples() {
+    return this.body.length > PLAYER_INITIAL_LENGTH && this.body.slice(PLAYER_INITIAL_LENGTH);
+  }
+
   setState(state) {
     Object.assign(this, state);
   }
@@ -14,10 +18,6 @@ class Player {
   collide(point) {
     const head = this.body[0];
     return head.x === point.x && head.y === point.y;
-  }
-
-  getApples() {
-    return this.body.length > PLAYER_INITIAL_LENGTH && this.body.slice(PLAYER_INITIAL_LENGTH);
   }
 }
 

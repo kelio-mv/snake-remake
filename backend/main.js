@@ -27,9 +27,7 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("get_apples", (callback) => {
-    callback(apples.get());
-  });
+  socket.emit("add_apples", apples.get());
 
   socket.on("update_player", (state) => {
     const { player } = socket;
@@ -44,17 +42,21 @@ io.on("connection", (socket) => {
         if (player.collide(point)) {
           if (!player.protected) {
             player.protected = true;
-            const playerApples = player.getApples();
-            apples.add(playerApples);
             socket.emit("respawn");
-            io.emit("add_apples", playerApples);
+
+            if (player.apples) {
+              apples.add(player.apples);
+              io.emit("add_apples", player.apples);
+            }
           }
           if (index === 0 && !opponent.protected) {
             opponent.protected = true;
-            const opponentApples = opponent.getApples();
-            apples.add(opponentApples);
             _socket.emit("respawn");
-            io.emit("add_apples", opponentApples);
+
+            if (opponent.apples) {
+              apples.add(opponent.apples);
+              io.emit("add_apples", opponent.apples);
+            }
           }
           return;
         }
