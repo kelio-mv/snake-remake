@@ -33,7 +33,9 @@ function update() {
   const now = Date.now() / 1000;
   const deltaTime = now - lastUpdateTime;
 
-  if (deltaTime >= UPDATE_INTERVAL) {
+  if (deltaTime >= 2 * UPDATE_INTERVAL) {
+    lastUpdateTime = now;
+  } else if (deltaTime >= UPDATE_INTERVAL) {
     localPlayer.update();
     lastUpdateTime += UPDATE_INTERVAL;
   }
@@ -62,14 +64,6 @@ function handleDisconnect() {
 }
 
 window.onresize = resize;
-window.onfocus = () => {
-  const now = Date.now() / 1000;
-  const deltaTime = now - lastUpdateTime;
-
-  if (deltaTime >= 2 * UPDATE_INTERVAL) {
-    lastUpdateTime = Date.now() / 1000;
-  }
-};
 
 socket.on("add_apples", apples.add);
 socket.on("update_player", (player) => {
