@@ -1,4 +1,4 @@
-const { BLOCK_SIZE, MAP_WIDTH, MAP_HEIGHT } = require("./constants");
+const { BLOCK_SIZE, MAP_WIDTH, MAP_HEIGHT, APPLE_MIN_QUANTITY } = require("./constants");
 
 function randint(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -8,7 +8,9 @@ class Apples {
   apples = [];
 
   constructor() {
-    this.apples.push(this.create());
+    for (let n = 0; n < APPLE_MIN_QUANTITY; n++) {
+      this.apples.push(this.create());
+    }
   }
 
   get quantity() {

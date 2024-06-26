@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const Player = require("./player");
 const Apples = require("./apples");
+const { APPLE_MIN_QUANTITY } = require("./constants");
 
 const port = process.env.PORT || 3000;
 const io = new Server(port, { cors: { origin: "*" } });
@@ -66,7 +67,7 @@ io.on("connection", (socket) => {
     for (const apple of apples.get()) {
       if (player.collide(apple)) {
         let newApple;
-        if (apples.quantity === 1) {
+        if (apples.quantity === APPLE_MIN_QUANTITY) {
           newApple = apples.replace(apple);
         } else {
           apples.destroy(apple);
