@@ -1,4 +1,4 @@
-const BLOCK_SIZE = 16;
+const BLOCK_SIZE = 12;
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -10,6 +10,8 @@ const DIRECTIONS_FROM_KEYS = {
   KeyD: "right",
 };
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
+const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
+const PLAYER_SPEED = 20 * BLOCK_SIZE;
 
 class Player {
   body = [
@@ -23,62 +25,71 @@ class Player {
   }
 
   handleKeyDown(e) {
-    if (DIRECTION_KEYS.includes(e.code)) {
-      this.direction = DIRECTIONS_FROM_KEYS[e.code];
-      this.body.push({ ...this.body.at(-1) });
+    if (!DIRECTION_KEYS.includes(e.code)) {
+      return;
     }
+    const direction = DIRECTIONS_FROM_KEYS[e.code];
+    const playerOppositeDirection = OPPOSITE_DIRECTIONS[this.direction];
+
+    if ([this.direction, playerOppositeDirection].includes(direction)) {
+      return;
+    }
+    this.direction = direction;
+    this.body.push({ ...this.body.at(-1) });
   }
 
-  getHeadDelta() {
-    const [x, y] = {
-      up: [0, -2],
-      down: [0, 2],
-      left: [-2, 0],
-      right: [2, 0],
-    }[this.direction];
-    return { x, y };
-  }
+  update(deltaTime) {
+    let deltaPosition = deltaTime * PLAYER_SPEED;
+    const [tail, tailTarget] = this.body;
+    const targetDistance = Math.abs(tailTarget.x - tail.x + tailTarget.y - tail.y);
 
-  getTailDelta() {
-    if (this.body.length === 2) {
-      return this.getHeadDelta();
+    if (deltaPosition > targetDistance) {
+      deltaTime -= (deltaPosition - targetDistance) / PLAYER_SPEED;
+      deltaPosition = targetDistance;
     } else {
-      const [tail, target] = this.body;
-      return { x: 2 * Math.sign(target.x - tail.x), y: 2 * Math.sign(target.y - tail.y) };
+      deltaTime = 0;
     }
-  }
 
-  update() {
+    const [tailDeltaX, tailDeltaY] = [
+      deltaPosition * Math.sign(tailTarget.x - tail.x),
+      deltaPosition * Math.sign(tailTarget.y - tail.y),
+    ];
     const head = this.body.at(-1);
-    const tail = this.body[0];
-    const headDelta = this.getHeadDelta();
-    const tailDelta = this.getTailDelta();
+    const [headDeltaX, headDeltaY] = {
+      up: [0, -deltaPosition],
+      down: [0, deltaPosition],
+      left: [-deltaPosition, 0],
+      right: [deltaPosition, 0],
+    }[this.direction];
 
-    head.x += headDelta.x;
-    head.y += headDelta.y;
-    tail.x += tailDelta.x;
-    tail.y += tailDelta.y;
+    tail.x += tailDeltaX;
+    tail.y += tailDeltaY;
+    head.x += headDeltaX;
+    head.y += headDeltaY;
 
-    if (this.body.length > 2) {
-      const tailTarget = this.body[1];
-
-      if (tail.x === tailTarget.x && tail.y === tailTarget.y) {
-        this.body.shift();
-      }
+    if (tail.x === tailTarget.x && tail.y === tailTarget.y) {
+      this.body.shift();
+    }
+    if (deltaTime > 0) {
+      this.update(deltaTime);
     }
   }
 
   draw(ctx) {
-    ctx.fillStyle = "#555";
-    ctx.strokeStyle = "#555";
+    ctx.fillStyle = "#2563eb";
+    ctx.strokeStyle = "#2563eb";
     ctx.lineWidth = 2 * BLOCK_SIZE;
+    const head = this.body.at(-1);
 
     this.body.forEach((circle, index) => {
+      if (circle === head) {
+        ctx.fillStyle = "#1e40af";
+      }
       ctx.beginPath();
       ctx.arc(circle.x, circle.y, BLOCK_SIZE, 0, 2 * Math.PI);
       ctx.fill();
 
-      if (index === this.body.length - 1) {
+      if (circle === head) {
         return;
       }
       const nextCircle = this.body[index + 1];
