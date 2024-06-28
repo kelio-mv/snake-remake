@@ -1,0 +1,5 @@
+const MAP_SIZE = 40;
+const BLOCK_SIZE = 24;
+const CANVAS_SIZE = MAP_SIZE * BLOCK_SIZE;
+
+export { CANVAS_SIZE, MAP_SIZE, BLOCK_SIZE };

@@ -1,4 +1,5 @@
-const BLOCK_SIZE = 12;
+import { BLOCK_SIZE } from "./constants.js";
+
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -11,12 +12,12 @@ const DIRECTIONS_FROM_KEYS = {
 };
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
-const PLAYER_SPEED = 20 * BLOCK_SIZE;
+const PLAYER_SPEED = 10 * BLOCK_SIZE;
 
 class Player {
   body = [
     { x: BLOCK_SIZE, y: BLOCK_SIZE },
-    { x: 15 * BLOCK_SIZE, y: BLOCK_SIZE },
+    { x: 10 * BLOCK_SIZE, y: BLOCK_SIZE },
   ];
   direction = "right";
 
@@ -71,7 +72,7 @@ class Player {
   draw(ctx) {
     ctx.fillStyle = "#2563eb";
     ctx.strokeStyle = "#2563eb";
-    ctx.lineWidth = 2 * BLOCK_SIZE;
+    ctx.lineWidth = BLOCK_SIZE;
     const head = this.body.at(-1);
 
     this.body.forEach((circle, index) => {
@@ -79,7 +80,7 @@ class Player {
         ctx.fillStyle = "#1e40af";
       }
       ctx.beginPath();
-      ctx.arc(circle.x, circle.y, BLOCK_SIZE, 0, 2 * Math.PI);
+      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
       ctx.fill();
 
       if (circle === head) {

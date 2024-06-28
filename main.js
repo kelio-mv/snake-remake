@@ -1,6 +1,7 @@
 import Player from "./player.js";
+import { CANVAS_SIZE } from "./constants.js";
 
-const canvas = document.getElementById("canvas");
+const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
 const player = new Player();
 const game = {
@@ -8,8 +9,11 @@ const game = {
 };
 
 function resizeCanvas() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  const widthScale = innerWidth / canvas.width;
+  const heightScale = innerHeight / canvas.height;
+  const scale = Math.min(widthScale, heightScale);
+  canvas.style.width = canvas.width * scale + "px";
+  canvas.style.height = canvas.height * scale + "px";
 }
 
 function update() {
@@ -18,12 +22,15 @@ function update() {
   game.lastUpdate = now;
   player.update(deltaTime);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   player.draw(ctx);
   requestAnimationFrame(update);
 }
 
 addEventListener("resize", resizeCanvas);
 
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
 resizeCanvas();
 update();

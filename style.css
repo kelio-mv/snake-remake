@@ -1,7 +1,13 @@
+html,
 body {
-  margin: 0;
+  height: 100%;
 }
 
-#canvas {
-  display: block;
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  background-color: black;
+  overscroll-behavior: contain;
 }
