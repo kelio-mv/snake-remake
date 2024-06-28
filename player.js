@@ -1,5 +1,6 @@
 import { BLOCK_SIZE } from "./constants.js";
 
+const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -11,9 +12,8 @@ const DIRECTIONS_FROM_KEYS = {
   KeyD: "right",
 };
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
-const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
-const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const MIN_DIRECTION_CHANGE_INTERVAL = BLOCK_SIZE / PLAYER_SPEED;
+const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 
 class Player {
   body = [
@@ -51,32 +51,42 @@ class Player {
     this.body.push({ ...this.body.at(-1) });
   }
 
-  update(deltaTime) {
-    const [tail, tailTarget] = this.body;
-    const targetDistance = Math.abs(tailTarget.x - tail.x + tailTarget.y - tail.y);
-    const deltaPosition = Math.min(deltaTime * PLAYER_SPEED, targetDistance);
-    const remainingTime = deltaTime - deltaPosition / PLAYER_SPEED;
-    const [tailDeltaX, tailDeltaY] = [
-      deltaPosition * Math.sign(tailTarget.x - tail.x),
-      deltaPosition * Math.sign(tailTarget.y - tail.y),
-    ];
+  moveHead(deltaTime) {
     const head = this.body.at(-1);
-    const [headDeltaX, headDeltaY] = {
-      up: [0, -deltaPosition],
-      down: [0, deltaPosition],
-      left: [-deltaPosition, 0],
-      right: [deltaPosition, 0],
+    const deltaPos = deltaTime * PLAYER_SPEED;
+    const [deltaX, deltaY] = {
+      up: [0, -deltaPos],
+      down: [0, deltaPos],
+      left: [-deltaPos, 0],
+      right: [deltaPos, 0],
     }[this.direction];
 
-    tail.x += tailDeltaX;
-    tail.y += tailDeltaY;
-    head.x += headDeltaX;
-    head.y += headDeltaY;
+    head.x += deltaX;
+    head.y += deltaY;
+  }
 
-    if (tail.x === tailTarget.x && tail.y === tailTarget.y) {
+  moveTail(deltaTime) {
+    const [tail, target] = this.body;
+    const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
+    const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
+    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
+    const [deltaX, deltaY] = [
+      deltaPos * Math.sign(target.x - tail.x),
+      deltaPos * Math.sign(target.y - tail.y),
+    ];
+
+    tail.x += deltaX;
+    tail.y += deltaY;
+
+    if (tail.x === target.x && tail.y === target.y) {
       this.body.shift();
-      this.update(remainingTime);
+      this.moveTail(remainingTime);
     }
+  }
+
+  update(deltaTime) {
+    this.moveHead(deltaTime);
+    this.moveTail(deltaTime);
   }
 
   draw(ctx) {
