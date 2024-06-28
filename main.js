@@ -1,8 +1,10 @@
+import Background from "./background.js";
 import Player from "./player.js";
 import { CANVAS_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
+const background = new Background();
 const player = new Player();
 const game = {
   lastUpdate: Date.now() / 1000,
@@ -24,6 +26,7 @@ function update() {
 
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  background.draw(ctx);
   player.draw(ctx);
   requestAnimationFrame(update);
 }
