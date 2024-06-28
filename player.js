@@ -63,8 +63,6 @@ class Player {
 
     if (tail.x === tailTarget.x && tail.y === tailTarget.y) {
       this.body.shift();
-    }
-    if (remainingTime > 0) {
       this.update(remainingTime);
     }
   }
