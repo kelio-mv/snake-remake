@@ -13,6 +13,7 @@ const DIRECTIONS_FROM_KEYS = {
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 const PLAYER_SPEED = 10 * BLOCK_SIZE;
+const MIN_DIRECTION_CHANGE_INTERVAL = BLOCK_SIZE / PLAYER_SPEED;
 
 class Player {
   body = [
@@ -20,6 +21,7 @@ class Player {
     { x: 10 * BLOCK_SIZE, y: BLOCK_SIZE },
   ];
   direction = "right";
+  lastDirectionChange = null;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -29,13 +31,23 @@ class Player {
     if (!DIRECTION_KEYS.includes(e.code)) {
       return;
     }
+
+    const now = Date.now() / 1000;
+    const deltaTime = now - this.lastDirectionChange;
+
+    if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
+      return;
+    }
+
     const direction = DIRECTIONS_FROM_KEYS[e.code];
     const playerOppositeDirection = OPPOSITE_DIRECTIONS[this.direction];
 
     if ([this.direction, playerOppositeDirection].includes(direction)) {
       return;
     }
+
     this.direction = direction;
+    this.lastDirectionChange = now;
     this.body.push({ ...this.body.at(-1) });
   }
 
