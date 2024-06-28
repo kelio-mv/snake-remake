@@ -39,17 +39,10 @@ class Player {
   }
 
   update(deltaTime) {
-    let deltaPosition = deltaTime * PLAYER_SPEED;
     const [tail, tailTarget] = this.body;
     const targetDistance = Math.abs(tailTarget.x - tail.x + tailTarget.y - tail.y);
-
-    if (deltaPosition > targetDistance) {
-      deltaTime -= (deltaPosition - targetDistance) / PLAYER_SPEED;
-      deltaPosition = targetDistance;
-    } else {
-      deltaTime = 0;
-    }
-
+    const deltaPosition = Math.min(deltaTime * PLAYER_SPEED, targetDistance);
+    const remainingTime = deltaTime - deltaPosition / PLAYER_SPEED;
     const [tailDeltaX, tailDeltaY] = [
       deltaPosition * Math.sign(tailTarget.x - tail.x),
       deltaPosition * Math.sign(tailTarget.y - tail.y),
@@ -70,8 +63,8 @@ class Player {
     if (tail.x === tailTarget.x && tail.y === tailTarget.y) {
       this.body.shift();
     }
-    if (deltaTime > 0) {
-      this.update(deltaTime);
+    if (remainingTime > 0) {
+      this.update(remainingTime);
     }
   }
 
