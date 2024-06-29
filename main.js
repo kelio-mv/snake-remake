@@ -11,11 +11,9 @@ const game = {
 };
 
 function resizeCanvas() {
-  const widthScale = innerWidth / canvas.width;
-  const heightScale = innerHeight / canvas.height;
-  const scale = Math.min(widthScale, heightScale);
-  canvas.style.width = canvas.width * scale + "px";
-  canvas.style.height = canvas.height * scale + "px";
+  const minScale = Math.min(innerWidth / canvas.width, innerHeight / canvas.height);
+  canvas.style.width = minScale * canvas.width + "px";
+  canvas.style.height = minScale * canvas.height + "px";
 }
 
 function update() {
