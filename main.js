@@ -24,8 +24,6 @@ function update() {
   game.lastUpdate = now;
   player.update(deltaTime);
 
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
   background.draw(ctx);
   player.draw(ctx);
   requestAnimationFrame(update);
