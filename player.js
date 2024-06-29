@@ -1,4 +1,4 @@
-import { BLOCK_SIZE } from "./constants.js";
+import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
 
 const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const DIRECTIONS_FROM_KEYS = {
@@ -17,10 +17,10 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 
 class Player {
   body = [
-    { x: BLOCK_SIZE, y: BLOCK_SIZE },
-    { x: 10 * BLOCK_SIZE, y: BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
   ];
-  direction = "right";
+  direction = "up";
   lastDirectionChange = null;
 
   constructor() {
@@ -84,9 +84,28 @@ class Player {
     }
   }
 
+  respawn() {
+    this.body = [
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+    ];
+    this.direction = "up";
+    this.lastDirectionChange = null;
+  }
+
   update(deltaTime) {
     this.moveHead(deltaTime);
     this.moveTail(deltaTime);
+    // Collision with edges
+    const head = this.body.at(-1);
+    if (
+      head.x <= BLOCK_SIZE / 2 ||
+      head.x >= CANVAS_SIZE - BLOCK_SIZE / 2 ||
+      head.y <= BLOCK_SIZE / 2 ||
+      head.y >= CANVAS_SIZE - BLOCK_SIZE / 2
+    ) {
+      this.respawn();
+    }
   }
 
   draw(ctx) {
