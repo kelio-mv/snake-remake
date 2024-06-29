@@ -1,9 +1,7 @@
 import { MAP_SIZE, BLOCK_SIZE } from "./constants.js";
 
-// const LIGHT_COLOR = "#4ade80";
-// const DARK_COLOR = "#44cf77";
-const LIGHT_COLOR = "#22c55e";
-const DARK_COLOR = "#20ba58";
+const LIGHT_COLOR = "#16a34a";
+const DARK_COLOR = "#149945";
 
 class Background {
   draw(ctx) {

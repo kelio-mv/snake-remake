@@ -90,20 +90,16 @@ class Player {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "#2563eb";
-    ctx.strokeStyle = "#2563eb";
+    ctx.fillStyle = "#38bdf8";
+    ctx.strokeStyle = "#38bdf8";
     ctx.lineWidth = BLOCK_SIZE;
-    const head = this.body.at(-1);
 
     this.body.forEach((circle, index) => {
-      if (circle === head) {
-        ctx.fillStyle = "#1e40af";
-      }
       ctx.beginPath();
       ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
       ctx.fill();
 
-      if (circle === head) {
+      if (circle === this.body.at(-1)) {
         return;
       }
       const nextCircle = this.body[index + 1];
