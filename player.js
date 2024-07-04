@@ -1,6 +1,5 @@
-import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
+import { BLOCK_SIZE, CANVAS_SIZE, PLAYER_SPEED } from "./constants.js";
 
-const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -98,6 +97,7 @@ class Player {
 
       if (this.pendingGrowthTime < 0) {
         this.moveTail(-this.pendingGrowthTime);
+        this.pendingGrowthTime = 0;
       }
 
       return;

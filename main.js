@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import Player from "./player.js";
 import Apples from "./apples.js";
-import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
+import { BLOCK_SIZE, CANVAS_SIZE, PLAYER_SPEED } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
@@ -25,7 +25,7 @@ function update() {
   player.update(deltaTime);
 
   if (player.collideApple(apples.apple)) {
-    player.pendingGrowthTime += 0.1;
+    player.pendingGrowthTime += BLOCK_SIZE / PLAYER_SPEED;
     apples.replace();
   }
 
