@@ -10,7 +10,7 @@ class Apples {
   }
 
   create() {
-    const [x, y] = [Apples.randint(0, MAP_SIZE - 1), Apples.randint(0, MAP_SIZE - 1)];
+    const [x, y] = [Apples.randint(1, MAP_SIZE - 2), Apples.randint(1, MAP_SIZE - 2)];
     return { x: (x + 0.5) * BLOCK_SIZE, y: (y + 0.5) * BLOCK_SIZE };
   }
 

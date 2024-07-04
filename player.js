@@ -1,5 +1,6 @@
-import { BLOCK_SIZE, CANVAS_SIZE, PLAYER_SPEED } from "./constants.js";
+import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
 
+const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -22,7 +23,7 @@ class Player {
   direction = "up";
   lastDirectionChange = null;
   touchStart = null;
-  pendingGrowthTime = 0;
+  deltaLength = 0;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -92,12 +93,16 @@ class Player {
   }
 
   moveTail(deltaTime) {
-    if (this.pendingGrowthTime > 0) {
-      this.pendingGrowthTime -= deltaTime;
+    let deltaPos = deltaTime * PLAYER_SPEED;
+    let remainingTime;
 
-      if (this.pendingGrowthTime < 0) {
-        this.moveTail(-this.pendingGrowthTime);
-        this.pendingGrowthTime = 0;
+    if (this.deltaLength > 0) {
+      this.deltaLength -= deltaPos;
+
+      if (this.deltaLength < 0) {
+        remainingTime = -this.deltaLength / PLAYER_SPEED;
+        this.moveTail(remainingTime);
+        this.deltaLength = 0;
       }
 
       return;
@@ -105,8 +110,8 @@ class Player {
 
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
-    const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
-    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
+    deltaPos = Math.min(deltaPos, targetDist);
+    remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
     const [deltaX, deltaY] = [
       deltaPos * Math.sign(target.x - tail.x),
       deltaPos * Math.sign(target.y - tail.y),
