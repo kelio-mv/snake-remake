@@ -18,13 +18,16 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 class Player {
   body = [
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
   ];
   direction = "up";
   lastDirectionChange = null;
+  touchStart = null;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
+    addEventListener("touchstart", this.handleTouchStart.bind(this));
+    addEventListener("touchmove", this.handleTouchMove.bind(this));
   }
 
   handleKeyDown(e) {
@@ -32,16 +35,40 @@ class Player {
       return;
     }
 
+    const direction = DIRECTIONS_FROM_KEYS[e.code];
+    this.setDirection(direction);
+  }
+
+  handleTouchStart(e) {
+    const touch = e.touches[0];
+    this.touchStart = { x: touch.clientX, y: touch.clientY };
+  }
+
+  handleTouchMove(e) {
+    if (this.touchStart === null) {
+      return;
+    }
+
+    const touch = e.touches[0];
+    const [deltaX, deltaY] = [touch.clientX - this.touchStart.x, touch.clientY - this.touchStart.y];
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      this.setDirection(deltaX > 0 ? "right" : "left");
+    } else {
+      this.setDirection(deltaY > 0 ? "down" : "up");
+    }
+
+    this.touchStart = null;
+  }
+
+  setDirection(direction) {
     const now = Date.now() / 1000;
     const deltaTime = now - this.lastDirectionChange;
+    const playerOppositeDirection = OPPOSITE_DIRECTIONS[this.direction];
 
     if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
       return;
     }
-
-    const direction = DIRECTIONS_FROM_KEYS[e.code];
-    const playerOppositeDirection = OPPOSITE_DIRECTIONS[this.direction];
-
     if ([this.direction, playerOppositeDirection].includes(direction)) {
       return;
     }
@@ -87,7 +114,7 @@ class Player {
   respawn() {
     this.body = [
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
     ];
     this.direction = "up";
     this.lastDirectionChange = null;
