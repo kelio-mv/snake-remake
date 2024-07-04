@@ -1,11 +1,13 @@
 import Background from "./background.js";
 import Player from "./player.js";
-import { CANVAS_SIZE } from "./constants.js";
+import Apples from "./apples.js";
+import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
 const background = new Background();
 const player = new Player();
+const apples = new Apples();
 const game = {
   lastUpdate: Date.now() / 1000,
 };
@@ -22,8 +24,14 @@ function update() {
   game.lastUpdate = now;
   player.update(deltaTime);
 
+  if (player.collideApple(apples.apple)) {
+    player.pendingGrowthTime += 0.1;
+    apples.replace();
+  }
+
   background.draw(ctx);
   player.draw(ctx);
+  apples.draw(ctx);
   requestAnimationFrame(update);
 }
 

@@ -18,11 +18,12 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 class Player {
   body = [
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
   ];
   direction = "up";
   lastDirectionChange = null;
   touchStart = null;
+  pendingGrowthTime = 0;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -92,6 +93,16 @@ class Player {
   }
 
   moveTail(deltaTime) {
+    if (this.pendingGrowthTime > 0) {
+      this.pendingGrowthTime -= deltaTime;
+
+      if (this.pendingGrowthTime < 0) {
+        this.moveTail(-this.pendingGrowthTime);
+      }
+
+      return;
+    }
+
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
     const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
@@ -110,10 +121,20 @@ class Player {
     }
   }
 
+  collideApple(apple) {
+    const head = this.body.at(-1);
+    return (
+      head.x < apple.x + BLOCK_SIZE &&
+      head.x + BLOCK_SIZE > apple.x &&
+      head.y < apple.y + BLOCK_SIZE &&
+      head.y + BLOCK_SIZE > apple.y
+    );
+  }
+
   respawn() {
     this.body = [
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
     ];
     this.direction = "up";
     this.lastDirectionChange = null;
