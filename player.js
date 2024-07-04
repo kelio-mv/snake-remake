@@ -64,12 +64,11 @@ class Player {
   setDirection(direction) {
     const now = Date.now() / 1000;
     const deltaTime = now - this.lastDirectionChange;
-    const playerOppositeDirection = OPPOSITE_DIRECTIONS[this.direction];
 
     if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
       return;
     }
-    if ([this.direction, playerOppositeDirection].includes(direction)) {
+    if ([this.direction, OPPOSITE_DIRECTIONS[this.direction]].includes(direction)) {
       return;
     }
 
