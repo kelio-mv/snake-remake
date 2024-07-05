@@ -18,7 +18,7 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 class Player {
   body = [
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
   ];
   direction = "up";
   lastDirectionChange = null;
@@ -29,6 +29,22 @@ class Player {
     addEventListener("keydown", this.handleKeyDown.bind(this));
     addEventListener("touchstart", this.handleTouchStart.bind(this));
     addEventListener("touchmove", this.handleTouchMove.bind(this));
+  }
+
+  setDirection(direction) {
+    const now = Date.now() / 1000;
+    const deltaTime = now - this.lastDirectionChange;
+
+    if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
+      return;
+    }
+    if ([this.direction, OPPOSITE_DIRECTIONS[this.direction]].includes(direction)) {
+      return;
+    }
+
+    this.direction = direction;
+    this.lastDirectionChange = now;
+    this.body.push({ ...this.body.at(-1) });
   }
 
   handleKeyDown(e) {
@@ -62,20 +78,15 @@ class Player {
     this.touchStart = null;
   }
 
-  setDirection(direction) {
-    const now = Date.now() / 1000;
-    const deltaTime = now - this.lastDirectionChange;
+  handleGrowth(deltaTime) {
+    const deltaPos = deltaTime * PLAYER_SPEED;
+    this.deltaLength -= deltaPos;
 
-    if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
-      return;
+    if (this.deltaLength < 0) {
+      const remainingTime = -this.deltaLength / PLAYER_SPEED;
+      this.moveTail(remainingTime);
+      this.deltaLength = 0;
     }
-    if ([this.direction, OPPOSITE_DIRECTIONS[this.direction]].includes(direction)) {
-      return;
-    }
-
-    this.direction = direction;
-    this.lastDirectionChange = now;
-    this.body.push({ ...this.body.at(-1) });
   }
 
   moveHead(deltaTime) {
@@ -93,25 +104,15 @@ class Player {
   }
 
   moveTail(deltaTime) {
-    let deltaPos = deltaTime * PLAYER_SPEED;
-    let remainingTime;
-
     if (this.deltaLength > 0) {
-      this.deltaLength -= deltaPos;
-
-      if (this.deltaLength < 0) {
-        remainingTime = -this.deltaLength / PLAYER_SPEED;
-        this.moveTail(remainingTime);
-        this.deltaLength = 0;
-      }
-
+      this.handleGrowth(deltaTime);
       return;
     }
 
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
-    deltaPos = Math.min(deltaPos, targetDist);
-    remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
+    const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
+    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
     const [deltaX, deltaY] = [
       deltaPos * Math.sign(target.x - tail.x),
       deltaPos * Math.sign(target.y - tail.y),
@@ -162,10 +163,25 @@ class Player {
     }
   }
 
+  collideEdges() {
+    const head = this.body.at(-1);
+
+    return (
+      head.x <= BLOCK_SIZE / 2 ||
+      head.x >= CANVAS_SIZE - BLOCK_SIZE / 2 ||
+      head.y <= BLOCK_SIZE / 2 ||
+      head.y >= CANVAS_SIZE - BLOCK_SIZE / 2
+    );
+  }
+
+  grow() {
+    this.deltaLength += BLOCK_SIZE;
+  }
+
   respawn() {
     this.body = [
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
     ];
     this.direction = "up";
     this.lastDirectionChange = null;
@@ -174,16 +190,6 @@ class Player {
   update(deltaTime) {
     this.moveHead(deltaTime);
     this.moveTail(deltaTime);
-    // Collision with edges
-    const head = this.body.at(-1);
-    if (
-      head.x <= BLOCK_SIZE / 2 ||
-      head.x >= CANVAS_SIZE - BLOCK_SIZE / 2 ||
-      head.y <= BLOCK_SIZE / 2 ||
-      head.y >= CANVAS_SIZE - BLOCK_SIZE / 2
-    ) {
-      this.respawn();
-    }
   }
 
   draw(ctx) {

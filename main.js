@@ -25,11 +25,11 @@ function update() {
   player.update(deltaTime);
 
   if (player.collideApple(apples.apple)) {
-    player.deltaLength += BLOCK_SIZE;
+    player.grow();
     apples.replace();
   }
 
-  if (player.collideItself()) {
+  if (player.collideItself() || player.collideEdges()) {
     player.respawn();
   }
 
