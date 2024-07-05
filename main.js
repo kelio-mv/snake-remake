@@ -29,6 +29,10 @@ function update() {
     apples.replace();
   }
 
+  if (player.collideItself()) {
+    player.respawn();
+  }
+
   background.draw(ctx);
   player.draw(ctx);
   apples.draw(ctx);

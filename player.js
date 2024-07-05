@@ -18,7 +18,7 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 class Player {
   body = [
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
   ];
   direction = "up";
   lastDirectionChange = null;
@@ -136,10 +136,38 @@ class Player {
     );
   }
 
+  collideItself() {
+    const head = this.body.at(-1);
+
+    for (let i = 0; i < this.body.length - 4; i++) {
+      const [circle, nextCircle] = this.body.slice(i, i + 2);
+      const [deltaX, deltaY] = [nextCircle.x - circle.x, nextCircle.y - circle.y];
+      const rect = {
+        x: circle.x,
+        y: circle.y,
+        width: Math.abs(deltaX) + BLOCK_SIZE,
+        height: Math.abs(deltaY) + BLOCK_SIZE,
+      };
+
+      if (deltaX < 0 || deltaY < 0) {
+        [rect.x, rect.y] = [nextCircle.x, nextCircle.y];
+      }
+
+      if (
+        head.x < rect.x + rect.width &&
+        head.x + BLOCK_SIZE > rect.x &&
+        head.y < rect.y + rect.height &&
+        head.y + BLOCK_SIZE > rect.y
+      ) {
+        return true;
+      }
+    }
+  }
+
   respawn() {
     this.body = [
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 15 * BLOCK_SIZE },
     ];
     this.direction = "up";
     this.lastDirectionChange = null;
