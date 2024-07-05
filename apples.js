@@ -1,6 +1,7 @@
 import { BLOCK_SIZE, MAP_SIZE } from "./constants.js";
 
 const APPLE_COLOR = "#dc2626";
+const APPLE_BORDER_COLOR = "#000";
 
 class Apples {
   apple = this.create();
@@ -19,10 +20,16 @@ class Apples {
   }
 
   draw(ctx) {
-    ctx.fillStyle = APPLE_COLOR;
     ctx.beginPath();
     ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
+    ctx.fillStyle = APPLE_COLOR;
     ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2 - 0.5, 0, 2 * Math.PI);
+    ctx.strokeStyle = APPLE_BORDER_COLOR;
+    ctx.lineWidth = 1;
+    ctx.stroke();
   }
 }
 
