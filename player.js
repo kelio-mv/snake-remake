@@ -126,19 +126,22 @@ class Player {
     }
   }
 
-  collideApple(apple) {
-    const head = this.body.at(-1);
+  collideRect(rect) {
+    const head = { ...this.body.at(-1), width: BLOCK_SIZE, height: BLOCK_SIZE };
+
     return (
-      head.x < apple.x + BLOCK_SIZE &&
-      head.x + BLOCK_SIZE > apple.x &&
-      head.y < apple.y + BLOCK_SIZE &&
-      head.y + BLOCK_SIZE > apple.y
+      head.x < rect.x + rect.width &&
+      head.x + head.width > rect.x &&
+      head.y < rect.y + rect.height &&
+      head.y + head.height > rect.y
     );
   }
 
-  collideItself() {
-    const head = this.body.at(-1);
+  collideApple(apple) {
+    return this.collideRect({ x: apple.x, y: apple.y, width: BLOCK_SIZE, height: BLOCK_SIZE });
+  }
 
+  collideItself() {
     for (let i = 0; i < this.body.length - 4; i++) {
       const [circle, nextCircle] = this.body.slice(i, i + 2);
       const [deltaX, deltaY] = [nextCircle.x - circle.x, nextCircle.y - circle.y];
@@ -153,12 +156,7 @@ class Player {
         [rect.x, rect.y] = [nextCircle.x, nextCircle.y];
       }
 
-      if (
-        head.x < rect.x + rect.width &&
-        head.x + BLOCK_SIZE > rect.x &&
-        head.y < rect.y + rect.height &&
-        head.y + BLOCK_SIZE > rect.y
-      ) {
+      if (this.collideRect(rect)) {
         return true;
       }
     }
