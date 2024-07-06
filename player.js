@@ -162,10 +162,10 @@ class Player {
     const head = this.body.at(-1);
 
     return (
-      head.x <= BLOCK_SIZE / 2 ||
-      head.x >= CANVAS_SIZE - BLOCK_SIZE / 2 ||
-      head.y <= BLOCK_SIZE / 2 ||
-      head.y >= CANVAS_SIZE - BLOCK_SIZE / 2
+      head.x < BLOCK_SIZE / 2 ||
+      head.x > CANVAS_SIZE - BLOCK_SIZE / 2 ||
+      head.y < BLOCK_SIZE / 2 ||
+      head.y > CANVAS_SIZE - BLOCK_SIZE / 2
     );
   }
 
