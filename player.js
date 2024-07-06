@@ -78,17 +78,6 @@ class Player {
     this.touchStart = null;
   }
 
-  handleGrowth(deltaTime) {
-    const deltaPos = deltaTime * PLAYER_SPEED;
-    this.deltaLength -= deltaPos;
-
-    if (this.deltaLength < 0) {
-      const remainingTime = -this.deltaLength / PLAYER_SPEED;
-      this.moveTail(remainingTime);
-      this.deltaLength = 0;
-    }
-  }
-
   moveHead(deltaTime) {
     const head = this.body.at(-1);
     const deltaPos = deltaTime * PLAYER_SPEED;
@@ -104,11 +93,6 @@ class Player {
   }
 
   moveTail(deltaTime) {
-    if (this.deltaLength > 0) {
-      this.handleGrowth(deltaTime);
-      return;
-    }
-
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
     const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
@@ -124,6 +108,17 @@ class Player {
     if (tail.x === target.x && tail.y === target.y) {
       this.body.shift();
       this.moveTail(remainingTime);
+    }
+  }
+
+  handleGrowth(deltaTime) {
+    const deltaPos = deltaTime * PLAYER_SPEED;
+    this.deltaLength -= deltaPos;
+
+    if (this.deltaLength < 0) {
+      const remainingTime = -this.deltaLength / PLAYER_SPEED;
+      this.moveTail(remainingTime);
+      this.deltaLength = 0;
     }
   }
 
@@ -189,7 +184,12 @@ class Player {
 
   update(deltaTime) {
     this.moveHead(deltaTime);
-    this.moveTail(deltaTime);
+
+    if (this.deltaLength > 0) {
+      this.handleGrowth(deltaTime);
+    } else {
+      this.moveTail(deltaTime);
+    }
   }
 
   draw(ctx) {
