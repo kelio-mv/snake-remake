@@ -193,34 +193,42 @@ class Player {
   }
 
   draw(ctx) {
+    ctx.fillStyle = "#000";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = BLOCK_SIZE;
+
     this.body.forEach((circle, index) => {
       ctx.beginPath();
       ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
-      ctx.fillStyle = "#38bdf8";
       ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2 - 0.5, 0, 2 * Math.PI);
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 1;
-      ctx.stroke();
 
       if (circle === this.body.at(-1)) {
         return;
       }
-
       const nextCircle = this.body[index + 1];
-
       ctx.beginPath();
       ctx.moveTo(circle.x, circle.y);
       ctx.lineTo(nextCircle.x, nextCircle.y);
-      ctx.strokeStyle = "#000";
       ctx.lineWidth = BLOCK_SIZE;
       ctx.stroke();
+    });
 
-      ctx.lineTo(circle.x, circle.y);
-      ctx.strokeStyle = "#38bdf8";
-      ctx.lineWidth = BLOCK_SIZE - 2;
+    ctx.fillStyle = "#38bdf8";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = BLOCK_SIZE - 2;
+
+    this.body.forEach((circle, index) => {
+      ctx.beginPath();
+      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2 - 1, 0, 2 * Math.PI);
+      ctx.fill();
+
+      if (circle === this.body.at(-1)) {
+        return;
+      }
+      const nextCircle = this.body[index + 1];
+      ctx.beginPath();
+      ctx.moveTo(circle.x, circle.y);
+      ctx.lineTo(nextCircle.x, nextCircle.y);
       ctx.stroke();
     });
   }
