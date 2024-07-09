@@ -209,7 +209,6 @@ class Player {
       ctx.beginPath();
       ctx.moveTo(circle.x, circle.y);
       ctx.lineTo(nextCircle.x, nextCircle.y);
-      ctx.lineWidth = BLOCK_SIZE;
       ctx.stroke();
     });
 
