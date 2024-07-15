@@ -18,12 +18,12 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 class Player {
   body = [
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
   ];
   direction = "up";
   lastDirectionChange = null;
   touchStart = null;
-  deltaLength = 0;
+  deltaLength = 3 * BLOCK_SIZE;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -176,10 +176,11 @@ class Player {
   respawn() {
     this.body = [
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - 3.5 * BLOCK_SIZE },
+      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
     ];
     this.direction = "up";
     this.lastDirectionChange = null;
+    this.deltaLength = 3 * BLOCK_SIZE;
   }
 
   update(deltaTime) {
