@@ -26,7 +26,7 @@ class Apples {
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2 - 1, 0, 2 * Math.PI);
+    ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
     ctx.fillStyle = APPLE_COLOR;
     ctx.fill();
   }

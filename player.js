@@ -214,11 +214,11 @@ class Player {
 
     ctx.fillStyle = "#38bdf8";
     ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = BLOCK_SIZE - 2;
+    ctx.lineWidth = BLOCK_SIZE - 4;
 
     this.body.forEach((circle, index) => {
       ctx.beginPath();
-      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2 - 1, 0, 2 * Math.PI);
+      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
       ctx.fill();
 
       if (circle === this.body.at(-1)) {
