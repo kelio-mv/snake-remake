@@ -6,12 +6,12 @@ const APPLE_BORDER_COLOR = "#000";
 class Apples {
   apple = this.create();
 
-  static randint(min, max) {
+  static randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   create() {
-    const [x, y] = [Apples.randint(1, MAP_SIZE - 2), Apples.randint(1, MAP_SIZE - 2)];
+    const [x, y] = [Apples.randomInt(1, MAP_SIZE - 2), Apples.randomInt(1, MAP_SIZE - 2)];
     return { x: (x + 0.5) * BLOCK_SIZE, y: (y + 0.5) * BLOCK_SIZE };
   }
 
