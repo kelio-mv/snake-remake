@@ -138,17 +138,17 @@ class Player {
 
   collideItself() {
     for (let i = 0; i < this.body.length - 4; i++) {
-      const [circle, nextCircle] = this.body.slice(i, i + 2);
-      const [deltaX, deltaY] = [nextCircle.x - circle.x, nextCircle.y - circle.y];
+      const [point, nextPoint] = this.body.slice(i, i + 2);
+      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
       const rect = {
-        x: circle.x,
-        y: circle.y,
+        x: point.x,
+        y: point.y,
         width: Math.abs(deltaX) + BLOCK_SIZE,
         height: Math.abs(deltaY) + BLOCK_SIZE,
       };
 
       if (deltaX < 0 || deltaY < 0) {
-        [rect.x, rect.y] = [nextCircle.x, nextCircle.y];
+        [rect.x, rect.y] = [nextPoint.x, nextPoint.y];
       }
 
       if (this.collideRect(rect)) {
@@ -196,18 +196,18 @@ class Player {
     ctx.strokeStyle = "#000";
     ctx.lineWidth = BLOCK_SIZE;
 
-    this.body.forEach((circle, index) => {
+    this.body.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
       ctx.fill();
 
-      if (circle === this.body.at(-1)) {
+      if (point === this.body.at(-1)) {
         return;
       }
-      const nextCircle = this.body[index + 1];
+      const nextPoint = this.body[index + 1];
       ctx.beginPath();
-      ctx.moveTo(circle.x, circle.y);
-      ctx.lineTo(nextCircle.x, nextCircle.y);
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(nextPoint.x, nextPoint.y);
       ctx.stroke();
     });
 
@@ -215,18 +215,18 @@ class Player {
     ctx.strokeStyle = "#38bdf8";
     ctx.lineWidth = BLOCK_SIZE - 4;
 
-    this.body.forEach((circle, index) => {
+    this.body.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(circle.x, circle.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
       ctx.fill();
 
-      if (circle === this.body.at(-1)) {
+      if (point === this.body.at(-1)) {
         return;
       }
-      const nextCircle = this.body[index + 1];
+      const nextPoint = this.body[index + 1];
       ctx.beginPath();
-      ctx.moveTo(circle.x, circle.y);
-      ctx.lineTo(nextCircle.x, nextCircle.y);
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(nextPoint.x, nextPoint.y);
       ctx.stroke();
     });
   }
