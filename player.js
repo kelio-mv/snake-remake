@@ -12,7 +12,6 @@ const DIRECTIONS_FROM_KEYS = {
   KeyD: "right",
 };
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
-const MIN_DIRECTION_CHANGE_INTERVAL = BLOCK_SIZE / PLAYER_SPEED;
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 
 class Player {
@@ -21,7 +20,6 @@ class Player {
     { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
   ];
   direction = "up";
-  lastDirectionChange = null;
   touchStart = null;
   deltaLength = 3 * BLOCK_SIZE;
 
@@ -32,18 +30,19 @@ class Player {
   }
 
   setDirection(direction) {
-    const now = Date.now() / 1000;
-    const deltaTime = now - this.lastDirectionChange;
-
-    if (deltaTime < MIN_DIRECTION_CHANGE_INTERVAL) {
-      return;
-    }
     if ([this.direction, OPPOSITE_DIRECTIONS[this.direction]].includes(direction)) {
       return;
     }
+    if (this.body.length > 2) {
+      const [lastTurn, head] = this.body.slice(-2);
+      const deltaPos = Math.abs(head.x - lastTurn.x) + Math.abs(head.y - lastTurn.y);
+
+      if (deltaPos < BLOCK_SIZE) {
+        return;
+      }
+    }
 
     this.direction = direction;
-    this.lastDirectionChange = now;
     this.body.push({ ...this.body.at(-1) });
   }
 
@@ -179,7 +178,6 @@ class Player {
       { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
     ];
     this.direction = "up";
-    this.lastDirectionChange = null;
     this.deltaLength = 3 * BLOCK_SIZE;
   }
 
