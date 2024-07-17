@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import Player from "./player.js";
 import Apples from "./apples.js";
-import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
+import { CANVAS_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
@@ -13,9 +13,10 @@ const game = {
 };
 
 function resizeCanvas() {
-  const minScale = Math.min(innerWidth / canvas.width, innerHeight / canvas.height);
-  canvas.style.width = minScale * canvas.width + "px";
-  canvas.style.height = minScale * canvas.height + "px";
+  const scaleX = innerWidth / canvas.width;
+  const scaleY = innerHeight / canvas.height;
+  const scale = Math.min(scaleX, scaleY);
+  canvas.style.transform = `scale(${scale})`;
 }
 
 function update() {
