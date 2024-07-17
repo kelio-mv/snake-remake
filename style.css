@@ -11,3 +11,8 @@ body {
   background-color: black;
   overscroll-behavior: contain;
 }
+
+.canvas {
+  width: 100vmin;
+  height: 100vmin;
+}

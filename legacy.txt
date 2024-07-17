@@ -1,0 +1,15 @@
+// Old function for letterbox scaling replaced with CSS
+
+function resizeCanvas() {
+  const scaleX = innerWidth / canvas.width;
+  const scaleY = innerHeight / canvas.height;
+  const scale = Math.min(scaleX, scaleY);
+  canvas.style.transform = `scale(${scale})`;
+}
+
+// Old styles for letterbox scaling (no upscaling)
+
+.canvas {
+  max-width: 100%;
+  max-height: 100%;
+}

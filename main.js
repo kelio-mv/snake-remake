@@ -12,13 +12,6 @@ const game = {
   lastUpdate: Date.now() / 1000,
 };
 
-function resizeCanvas() {
-  const scaleX = innerWidth / canvas.width;
-  const scaleY = innerHeight / canvas.height;
-  const scale = Math.min(scaleX, scaleY);
-  canvas.style.transform = `scale(${scale})`;
-}
-
 function update() {
   const now = Date.now() / 1000;
   const deltaTime = now - game.lastUpdate;
@@ -40,9 +33,6 @@ function update() {
   requestAnimationFrame(update);
 }
 
-addEventListener("resize", resizeCanvas);
-
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
-resizeCanvas();
 update();
