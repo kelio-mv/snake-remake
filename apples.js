@@ -1,4 +1,4 @@
-import { BLOCK_SIZE, MAP_SIZE } from "./constants.js";
+import { BLOCK_SIZE, MAP_SIZE, BORDER_WIDTH } from "./constants.js";
 
 const APPLE_COLOR = "#dc2626";
 const APPLE_BORDER_COLOR = "#000";
@@ -26,7 +26,7 @@ class Apples {
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
+    ctx.arc(this.apple.x, this.apple.y, BLOCK_SIZE / 2 - BORDER_WIDTH, 0, 2 * Math.PI);
     ctx.fillStyle = APPLE_COLOR;
     ctx.fill();
   }

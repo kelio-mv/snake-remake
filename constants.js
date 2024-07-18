@@ -1,5 +1,6 @@
 const CANVAS_SIZE = 1080;
 const MAP_SIZE = 40;
-const BLOCK_SIZE = CANVAS_SIZE / MAP_SIZE; // should be integer
+const BLOCK_SIZE = CANVAS_SIZE / MAP_SIZE; // 27
+const BORDER_WIDTH = BLOCK_SIZE / 9; // 3
 
-export { CANVAS_SIZE, MAP_SIZE, BLOCK_SIZE };
+export { CANVAS_SIZE, MAP_SIZE, BLOCK_SIZE, BORDER_WIDTH };

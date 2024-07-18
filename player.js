@@ -1,4 +1,4 @@
-import { BLOCK_SIZE, CANVAS_SIZE } from "./constants.js";
+import { BLOCK_SIZE, CANVAS_SIZE, BORDER_WIDTH } from "./constants.js";
 
 const PLAYER_SPEED = 10 * BLOCK_SIZE;
 const DIRECTIONS_FROM_KEYS = {
@@ -213,11 +213,11 @@ class Player {
 
     ctx.fillStyle = "#38bdf8";
     ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = BLOCK_SIZE - 4;
+    ctx.lineWidth = BLOCK_SIZE - 2 * BORDER_WIDTH;
 
     this.body.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(point.x, point.y, BLOCK_SIZE / 2 - 2, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, BLOCK_SIZE / 2 - BORDER_WIDTH, 0, 2 * Math.PI);
       ctx.fill();
 
       if (point === this.body.at(-1)) {
