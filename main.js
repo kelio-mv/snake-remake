@@ -15,7 +15,7 @@ const game = {
 function update() {
   const now = Date.now() / 1000;
   const deltaTime = now - game.lastUpdate;
-  game.lastUpdate = now;
+
   player.update(deltaTime);
 
   if (player.collideApple(apples.apple)) {
@@ -27,12 +27,22 @@ function update() {
     player.respawn();
   }
 
+  game.lastUpdate = now;
+}
+
+function draw() {
   background.draw(ctx);
   player.draw(ctx);
   apples.draw(ctx);
-  requestAnimationFrame(update);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
 }
 
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
-update();
+
+loop();
