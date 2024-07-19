@@ -1,0 +1,16 @@
+{
+  "name": "snake-remake",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
