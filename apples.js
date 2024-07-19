@@ -1,4 +1,4 @@
-import { MAP_SIZE, BORDER_WIDTH } from "./constants.js";
+import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 
 const APPLE_COLOR = "#dc2626";
 const APPLE_BORDER_COLOR = "#000";
@@ -11,7 +11,7 @@ class Apples {
   }
 
   create() {
-    const [x, y] = [Apples.randomInt(1, MAP_SIZE - 2), Apples.randomInt(1, MAP_SIZE - 2)];
+    const [x, y] = [Apples.randomInt(1, FIELD_SIZE - 2), Apples.randomInt(1, FIELD_SIZE - 2)];
     return { x: x + 0.5, y: y + 0.5 };
   }
 

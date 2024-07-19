@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import Player from "./player.js";
 import Apples from "./apples.js";
-import { MAP_SIZE } from "./constants.js";
+import { FIELD_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
@@ -14,7 +14,7 @@ const game = {
 
 function resize() {
   const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
-  const scaleFactor = canvasSize / MAP_SIZE;
+  const scaleFactor = canvasSize / FIELD_SIZE;
 
   canvas.width = canvasSize;
   canvas.height = canvasSize;

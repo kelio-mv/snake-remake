@@ -1,4 +1,4 @@
-import { MAP_SIZE, BORDER_WIDTH } from "./constants.js";
+import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 
 const PLAYER_SPEED = 10;
 const DIRECTIONS_FROM_KEYS = {
@@ -16,8 +16,8 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 
 class Player {
   body = [
-    { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
-    { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
+    { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+    { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
   ];
   direction = "up";
   touchStart = null;
@@ -160,7 +160,7 @@ class Player {
   collideEdges() {
     const head = this.body.at(-1);
 
-    return head.x < 0.5 || head.x > MAP_SIZE - 0.5 || head.y < 0.5 || head.y > MAP_SIZE - 0.5;
+    return head.x < 0.5 || head.x > FIELD_SIZE - 0.5 || head.y < 0.5 || head.y > FIELD_SIZE - 0.5;
   }
 
   grow() {
@@ -169,8 +169,8 @@ class Player {
 
   respawn() {
     this.body = [
-      { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
-      { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
     ];
     this.direction = "up";
     this.deltaLength = 3;
