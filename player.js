@@ -1,6 +1,6 @@
-import { BLOCK_SIZE, CANVAS_SIZE, BORDER_WIDTH } from "./constants.js";
+import { MAP_SIZE, BORDER_WIDTH } from "./constants.js";
 
-const PLAYER_SPEED = 10 * BLOCK_SIZE;
+const PLAYER_SPEED = 10;
 const DIRECTIONS_FROM_KEYS = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -16,12 +16,12 @@ const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "lef
 
 class Player {
   body = [
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-    { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
+    { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
+    { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
   ];
   direction = "up";
   touchStart = null;
-  deltaLength = 3 * BLOCK_SIZE;
+  deltaLength = 3;
 
   constructor() {
     addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -37,7 +37,7 @@ class Player {
       const [lastTurn, head] = this.body.slice(-2);
       const deltaPos = Math.abs(head.x - lastTurn.x) + Math.abs(head.y - lastTurn.y);
 
-      if (deltaPos < BLOCK_SIZE) {
+      if (deltaPos < 1) {
         return;
       }
     }
@@ -122,7 +122,7 @@ class Player {
   }
 
   collideRect(rect) {
-    const head = { ...this.body.at(-1), width: BLOCK_SIZE, height: BLOCK_SIZE };
+    const head = { ...this.body.at(-1), width: 1, height: 1 };
 
     return (
       head.x < rect.x + rect.width &&
@@ -133,7 +133,7 @@ class Player {
   }
 
   collideApple(apple) {
-    return this.collideRect({ x: apple.x, y: apple.y, width: BLOCK_SIZE, height: BLOCK_SIZE });
+    return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
   }
 
   collideItself() {
@@ -143,8 +143,8 @@ class Player {
       const rect = {
         x: point.x,
         y: point.y,
-        width: Math.abs(deltaX) + BLOCK_SIZE,
-        height: Math.abs(deltaY) + BLOCK_SIZE,
+        width: Math.abs(deltaX) + 1,
+        height: Math.abs(deltaY) + 1,
       };
 
       if (deltaX < 0 || deltaY < 0) {
@@ -160,25 +160,20 @@ class Player {
   collideEdges() {
     const head = this.body.at(-1);
 
-    return (
-      head.x < BLOCK_SIZE / 2 ||
-      head.x > CANVAS_SIZE - BLOCK_SIZE / 2 ||
-      head.y < BLOCK_SIZE / 2 ||
-      head.y > CANVAS_SIZE - BLOCK_SIZE / 2
-    );
+    return head.x < 0.5 || head.x > MAP_SIZE - 0.5 || head.y < 0.5 || head.y > MAP_SIZE - 0.5;
   }
 
   grow() {
-    this.deltaLength += BLOCK_SIZE;
+    this.deltaLength += 1;
   }
 
   respawn() {
     this.body = [
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
-      { x: CANVAS_SIZE / 2, y: CANVAS_SIZE - BLOCK_SIZE / 2 },
+      { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
+      { x: MAP_SIZE / 2, y: MAP_SIZE - 0.5 },
     ];
     this.direction = "up";
-    this.deltaLength = 3 * BLOCK_SIZE;
+    this.deltaLength = 3;
   }
 
   update(deltaTime) {
@@ -194,11 +189,11 @@ class Player {
   draw(ctx) {
     ctx.fillStyle = "#000";
     ctx.strokeStyle = "#000";
-    ctx.lineWidth = BLOCK_SIZE;
+    ctx.lineWidth = 1;
 
     this.body.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(point.x, point.y, BLOCK_SIZE / 2, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, 0.5, 0, 2 * Math.PI);
       ctx.fill();
 
       if (point === this.body.at(-1)) {
@@ -213,11 +208,11 @@ class Player {
 
     ctx.fillStyle = "#38bdf8";
     ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = BLOCK_SIZE - 2 * BORDER_WIDTH;
+    ctx.lineWidth = 1 - 2 * BORDER_WIDTH;
 
     this.body.forEach((point, index) => {
       ctx.beginPath();
-      ctx.arc(point.x, point.y, BLOCK_SIZE / 2 - BORDER_WIDTH, 0, 2 * Math.PI);
+      ctx.arc(point.x, point.y, 0.5 - BORDER_WIDTH, 0, 2 * Math.PI);
       ctx.fill();
 
       if (point === this.body.at(-1)) {

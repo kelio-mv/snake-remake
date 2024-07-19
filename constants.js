@@ -1,6 +1,4 @@
-const CANVAS_SIZE = 1080;
 const MAP_SIZE = 40;
-const BLOCK_SIZE = CANVAS_SIZE / MAP_SIZE; // 27
-const BORDER_WIDTH = BLOCK_SIZE / 9; // 3
+const BORDER_WIDTH = 1 / 9; // 2px in 720p (720 / 40 / 9)
 
-export { CANVAS_SIZE, MAP_SIZE, BLOCK_SIZE, BORDER_WIDTH };
+export { MAP_SIZE, BORDER_WIDTH };

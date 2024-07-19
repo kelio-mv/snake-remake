@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import Player from "./player.js";
 import Apples from "./apples.js";
-import { CANVAS_SIZE } from "./constants.js";
+import { MAP_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
@@ -11,6 +11,15 @@ const apples = new Apples();
 const game = {
   lastUpdate: Date.now() / 1000,
 };
+
+function resize() {
+  const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
+  const scaleFactor = canvasSize / MAP_SIZE;
+
+  canvas.width = canvasSize;
+  canvas.height = canvasSize;
+  ctx.scale(scaleFactor, scaleFactor);
+}
 
 function update() {
   const now = Date.now() / 1000;
@@ -22,7 +31,6 @@ function update() {
     player.grow();
     apples.replace();
   }
-
   if (player.collideItself() || player.collideEdges()) {
     player.respawn();
   }
@@ -42,7 +50,7 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-canvas.width = CANVAS_SIZE;
-canvas.height = CANVAS_SIZE;
+addEventListener("resize", resize);
 
+resize();
 loop();
