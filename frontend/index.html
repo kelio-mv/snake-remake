@@ -2,12 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, interactive-widget=resizes-content"
+    />
     <link rel="stylesheet" href="style.css" />
     <title>Document</title>
   </head>
   <body>
-    <canvas class="canvas"></canvas>
+    <div class="home-page">
+      <h1 class="home-title">Snake Remake</h1>
+      <form class="home-form">
+        <input type="text" class="home-username-input" placeholder="Nome de usuário" />
+        <br />
+        <button class="home-join-button">Entrar</button>
+      </form>
+    </div>
+    <div class="game-page" hidden>
+      <canvas class="game-canvas"></canvas>
+    </div>
     <script src="main.js" type="module"></script>
   </body>
 </html>

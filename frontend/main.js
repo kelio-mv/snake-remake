@@ -4,13 +4,16 @@ import Apples from "./apples.js";
 import { FIELD_SIZE } from "./constants.js";
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
 
-const canvas = document.querySelector(".canvas");
+const homeForm = document.querySelector(".home-form");
+const homePage = document.querySelector(".home-page");
+const gamePage = document.querySelector(".game-page");
+const canvas = document.querySelector(".game-canvas");
 const ctx = canvas.getContext("2d");
 const background = new Background();
 const player = new Player();
 const apples = new Apples();
 const game = { lastUpdate: Date.now() / 1000 };
-const socket = io("ws://localhost:3000");
+// const socket = io("ws://localhost:3000");
 
 function resize() {
   const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
@@ -50,6 +53,11 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+homeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  homePage.hidden = true;
+  gamePage.hidden = false;
+});
 addEventListener("resize", resize);
 
 resize();

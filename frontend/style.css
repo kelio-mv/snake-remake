@@ -1,18 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@400..700&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font: inherit;
+}
+
 html,
-body {
+body,
+.home-page,
+.game-page {
   height: 100%;
 }
 
+html {
+  color-scheme: dark;
+  font-family: "Work Sans", system-ui, sans-serif;
+  line-height: 1;
+}
+
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  background-color: black;
   overscroll-behavior: contain;
 }
 
-.canvas {
+[hidden] {
+  display: none !important;
+}
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #149945; */
+  background-image: conic-gradient(
+    #149945 90deg,
+    #16a34a 90deg 180deg,
+    #149945 180deg 270deg,
+    #16a34a 270deg
+  );
+  background-size: calc(100vmin / 20) calc(100vmin / 20);
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 4px #052e16;
+  margin-bottom: 3rem;
+}
+
+.home-username-input,
+.home-join-button {
+  width: 12rem;
+  height: 2rem;
+  border: 1px solid #052e16;
+  border-radius: 0.25rem;
+}
+
+.home-username-input {
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+  background-color: #166534;
+}
+
+.home-username-input::placeholder {
+  color: rgb(255, 255, 255, 0.5);
+}
+
+.home-join-button {
+  background-color: #14532d;
+  cursor: pointer;
+}
+
+.game-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+.game-canvas {
   width: 100vmin;
   height: 100vmin;
 }
