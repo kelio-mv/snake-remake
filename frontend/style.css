@@ -32,14 +32,13 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-color: #149945; */
   background-image: conic-gradient(
-    #149945 90deg,
-    #16a34a 90deg 180deg,
-    #149945 180deg 270deg,
-    #16a34a 270deg
+    var(--bg-dark-color) 90deg,
+    var(--bg-light-color) 90deg 180deg,
+    var(--bg-dark-color) 180deg 270deg,
+    var(--bg-light-color) 270deg
   );
-  background-size: calc(100vmin / 20) calc(100vmin / 20);
+  background-size: calc(200vmin / var(--field-size)) calc(200vmin / var(--field-size));
 }
 
 .home-title {

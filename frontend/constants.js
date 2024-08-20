@@ -1,4 +1,6 @@
 const FIELD_SIZE = 40;
 const BORDER_WIDTH = 1 / 9; // 2px in 720p (720 / 40 / 9)
+const BG_LIGHT_COLOR = "#16a34a";
+const BG_DARK_COLOR = "#149945";
 
-export { FIELD_SIZE, BORDER_WIDTH };
+export { FIELD_SIZE, BORDER_WIDTH, BG_LIGHT_COLOR, BG_DARK_COLOR };

@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import Player from "./player.js";
 import Apples from "./apples.js";
-import { FIELD_SIZE } from "./constants.js";
+import { FIELD_SIZE, BG_LIGHT_COLOR, BG_DARK_COLOR } from "./constants.js";
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
 
 const homeForm = document.querySelector(".home-form");
@@ -53,6 +53,9 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
+homePage.style.setProperty("--bg-dark-color", BG_DARK_COLOR);
+homePage.style.setProperty("--field-size", FIELD_SIZE);
 homeForm.addEventListener("submit", (e) => {
   e.preventDefault();
   homePage.hidden = true;
