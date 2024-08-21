@@ -22,9 +22,6 @@ class Player {
 
   constructor() {
     this.reset();
-    addEventListener("keydown", this.handleKeyDown.bind(this));
-    addEventListener("touchstart", this.handleTouchStart.bind(this));
-    addEventListener("touchmove", this.handleTouchMove.bind(this));
   }
 
   setDirection(direction) {
