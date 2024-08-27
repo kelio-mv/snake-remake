@@ -8,7 +8,6 @@ const ctx = canvas.getContext("2d");
 const background = new Background();
 const player = new Player();
 const apples = new Apples();
-const state = { lastUpdate: null };
 
 function resize() {
   const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
@@ -19,10 +18,7 @@ function resize() {
   ctx.scale(scaleFactor, scaleFactor);
 }
 
-function update() {
-  const now = Date.now() / 1000;
-  const deltaTime = now - state.lastUpdate;
-
+function update(deltaTime) {
   player.update(deltaTime);
 
   if (player.collideApple(apples.apple)) {
@@ -32,8 +28,6 @@ function update() {
   if (player.collideItself() || player.collideEdges()) {
     player.respawn();
   }
-
-  state.lastUpdate = now;
 }
 
 function draw() {
@@ -42,10 +36,13 @@ function draw() {
   apples.draw(ctx);
 }
 
-function loop() {
-  update();
+function loop(lastTick) {
+  const now = Date.now() / 1000;
+  const deltaTime = lastTick ? now - lastTick : 0;
+
+  update(deltaTime);
   draw();
-  requestAnimationFrame(loop);
+  requestAnimationFrame(() => loop(now));
 }
 
 function init() {
@@ -53,7 +50,6 @@ function init() {
   addEventListener("touchstart", player.handleTouchStart.bind(player));
   addEventListener("touchmove", player.handleTouchMove.bind(player));
   addEventListener("resize", resize);
-  state.lastUpdate = Date.now() / 1000;
 
   resize();
   loop();
