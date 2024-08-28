@@ -2,7 +2,8 @@ import { Server } from "socket.io";
 import Apple from "./apple.js";
 import Player from "./player.js";
 
-const io = new Server(3000, { cors: { origin: "*" } });
+const port = 3000;
+const io = new Server(port, { cors: { origin: "*" } });
 const apple = new Apple();
 
 io.use((socket, next) => {
@@ -38,3 +39,5 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+console.log("Server is running on port", port);
