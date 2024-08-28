@@ -21,6 +21,9 @@ class Player {
   touchStart = null;
 
   constructor() {
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
     this.reset();
   }
 
@@ -223,6 +226,10 @@ class Player {
       ctx.lineTo(nextPoint.x, nextPoint.y);
       ctx.stroke();
     });
+  }
+
+  getState() {
+    return [this.body, this.direction, this.deltaLength];
   }
 }
 

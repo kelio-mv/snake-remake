@@ -1,13 +1,14 @@
 import Background from "./background.js";
 import Player from "./player.js";
-import Apples from "./apples.js";
+import Apple from "./apple.js";
+import socket from "./socket.js";
 import { FIELD_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".game-canvas");
 const ctx = canvas.getContext("2d");
 const background = new Background();
 const player = new Player();
-const apples = new Apples();
+const apple = new Apple();
 
 function resize() {
   const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
@@ -20,20 +21,13 @@ function resize() {
 
 function update(deltaTime) {
   player.update(deltaTime);
-
-  if (player.collideApple(apples.apple)) {
-    player.grow();
-    apples.replace();
-  }
-  if (player.collideItself() || player.collideEdges()) {
-    player.respawn();
-  }
+  socket.emit("set_player", player.getState());
 }
 
 function draw() {
   background.draw(ctx);
   player.draw(ctx);
-  apples.draw(ctx);
+  apple.draw(ctx);
 }
 
 function loop(lastTick) {
@@ -46,10 +40,22 @@ function loop(lastTick) {
 }
 
 function init() {
-  addEventListener("keydown", player.handleKeyDown.bind(player));
-  addEventListener("touchstart", player.handleTouchStart.bind(player));
-  addEventListener("touchmove", player.handleTouchMove.bind(player));
+  addEventListener("keydown", player.handleKeyDown);
+  addEventListener("touchstart", player.handleTouchStart);
+  addEventListener("touchmove", player.handleTouchMove);
   addEventListener("resize", resize);
+
+  socket.on("set_apple", (state, grow) => {
+    apple.set(...state);
+    if (grow) {
+      player.grow();
+    }
+  });
+
+  socket.on("respawn", (cb) => {
+    player.respawn();
+    cb();
+  });
 
   resize();
   loop();

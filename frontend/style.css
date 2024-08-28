@@ -48,7 +48,7 @@ body {
   margin-bottom: 3rem;
 }
 
-.home-username-input,
+.home-nickname-input,
 .home-join-button {
   width: 12rem;
   height: 2rem;
@@ -56,13 +56,13 @@ body {
   border-radius: 0.25rem;
 }
 
-.home-username-input {
+.home-nickname-input {
   margin-bottom: 1rem;
   padding: 0 0.5rem;
   background-color: #166534;
 }
 
-.home-username-input::placeholder {
+.home-nickname-input::placeholder {
   color: rgb(255, 255, 255, 0.5);
 }
 
