@@ -52,9 +52,9 @@ function init() {
     }
   });
 
-  socket.on("respawn", (cb) => {
+  socket.on("respawn", () => {
     player.respawn();
-    cb();
+    socket.emit("respawn");
   });
 
   resize();
