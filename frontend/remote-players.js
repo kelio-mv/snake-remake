@@ -1,26 +1,10 @@
 import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 
 const PLAYER_SPEED = 10;
-const DIRECTIONS_FROM_KEYS = {
-  ArrowUp: "up",
-  ArrowDown: "down",
-  ArrowLeft: "left",
-  ArrowRight: "right",
-  KeyW: "up",
-  KeyS: "down",
-  KeyA: "left",
-  KeyD: "right",
-};
-const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
-const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 
-class Player {
-  touchStart = null;
-
-  constructor() {
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleTouchStart = this.handleTouchStart.bind(this);
-    this.handleTouchMove = this.handleTouchMove.bind(this);
+class RemotePlayer {
+  constructor(nickname) {
+    this.nickname = nickname;
     this.reset();
   }
 
@@ -31,54 +15,6 @@ class Player {
     ];
     this.direction = "up";
     this.deltaLength = 3;
-  }
-
-  setDirection(direction) {
-    if ([this.direction, OPPOSITE_DIRECTIONS[this.direction]].includes(direction)) {
-      return;
-    }
-    if (this.body.length > 2) {
-      const [lastTurn, head] = this.body.slice(-2);
-      const deltaPos = Math.abs(head.x - lastTurn.x) + Math.abs(head.y - lastTurn.y);
-
-      if (deltaPos < 1) {
-        return;
-      }
-    }
-
-    this.direction = direction;
-    this.body.push({ ...this.body.at(-1) });
-  }
-
-  handleKeyDown(e) {
-    if (!DIRECTION_KEYS.includes(e.code)) {
-      return;
-    }
-
-    const direction = DIRECTIONS_FROM_KEYS[e.code];
-    this.setDirection(direction);
-  }
-
-  handleTouchStart(e) {
-    const touch = e.touches[0];
-    this.touchStart = { x: touch.clientX, y: touch.clientY };
-  }
-
-  handleTouchMove(e) {
-    if (this.touchStart === null) {
-      return;
-    }
-
-    const touch = e.touches[0];
-    const [deltaX, deltaY] = [touch.clientX - this.touchStart.x, touch.clientY - this.touchStart.y];
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      this.setDirection(deltaX > 0 ? "right" : "left");
-    } else {
-      this.setDirection(deltaY > 0 ? "down" : "up");
-    }
-
-    this.touchStart = null;
   }
 
   moveHead(deltaTime) {
@@ -163,8 +99,8 @@ class Player {
       ctx.stroke();
     });
 
-    ctx.fillStyle = "#38bdf8";
-    ctx.strokeStyle = "#38bdf8";
+    ctx.fillStyle = "#fb923c";
+    ctx.strokeStyle = "#fb923c";
     ctx.lineWidth = 1 - 2 * BORDER_WIDTH;
 
     this.body.forEach((point, index) => {
@@ -183,9 +119,32 @@ class Player {
     });
   }
 
-  getState() {
-    return [this.body, this.direction, this.deltaLength];
+  setState(body, direction, deltaLength) {
+    this.body = body;
+    this.direction = direction;
+    this.deltaLength = deltaLength;
   }
 }
 
-export default Player;
+class RemotePlayers {
+  players = [];
+
+  setPlayerState(nickname, state) {
+    let player = this.players.find((player) => player.nickname === nickname);
+    if (!player) {
+      player = new RemotePlayer(nickname);
+      this.players.push(player);
+    }
+    player.setState(...state);
+  }
+
+  removePlayer(nickname) {
+    this.players = this.players.filter((player) => player.nickname !== nickname);
+  }
+
+  draw(ctx) {
+    this.players.forEach((player) => player.draw(ctx));
+  }
+}
+
+export default RemotePlayers;

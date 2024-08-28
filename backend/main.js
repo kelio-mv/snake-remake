@@ -31,6 +31,9 @@ io.on("connection", (socket) => {
     } else if (socket.player.collideApple(apple.instance)) {
       apple.replace();
       socket.emit("set_apple", apple.getState(), true);
+      socket.broadcast.emit("set_apple", apple.getState());
+    } else {
+      socket.broadcast.emit("set_player", socket.nickname, state);
     }
   });
 

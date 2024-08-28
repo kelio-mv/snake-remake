@@ -1,5 +1,6 @@
 import Background from "./background.js";
-import Player from "./player.js";
+import LocalPlayer from "./local-player.js";
+import RemotePlayers from "./remote-players.js";
 import Apple from "./apple.js";
 import socket from "./socket.js";
 import { FIELD_SIZE } from "./constants.js";
@@ -7,7 +8,8 @@ import { FIELD_SIZE } from "./constants.js";
 const canvas = document.querySelector(".game-canvas");
 const ctx = canvas.getContext("2d");
 const background = new Background();
-const player = new Player();
+const localPlayer = new LocalPlayer();
+const remotePlayers = new RemotePlayers();
 const apple = new Apple();
 
 function resize() {
@@ -20,13 +22,14 @@ function resize() {
 }
 
 function update(deltaTime) {
-  player.update(deltaTime);
-  socket.emit("set_player", player.getState());
+  localPlayer.update(deltaTime);
+  socket.emit("set_player", localPlayer.getState());
 }
 
 function draw() {
   background.draw(ctx);
-  player.draw(ctx);
+  localPlayer.draw(ctx);
+  remotePlayers.draw(ctx);
   apple.draw(ctx);
 }
 
@@ -40,20 +43,24 @@ function loop(lastTick) {
 }
 
 function init() {
-  addEventListener("keydown", player.handleKeyDown);
-  addEventListener("touchstart", player.handleTouchStart);
-  addEventListener("touchmove", player.handleTouchMove);
+  addEventListener("keydown", localPlayer.handleKeyDown);
+  addEventListener("touchstart", localPlayer.handleTouchStart);
+  addEventListener("touchmove", localPlayer.handleTouchMove);
   addEventListener("resize", resize);
 
   socket.on("set_apple", (state, grow) => {
-    apple.set(...state);
+    apple.setState(...state);
     if (grow) {
-      player.grow();
+      localPlayer.grow();
     }
   });
 
+  socket.on("set_player", (nickname, state) => {
+    remotePlayers.setPlayerState(nickname, state);
+  });
+
   socket.on("respawn", () => {
-    player.respawn();
+    localPlayer.respawn();
     socket.emit("respawn");
   });
 

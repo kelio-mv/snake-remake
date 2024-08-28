@@ -6,7 +6,7 @@ const APPLE_BORDER_COLOR = "#000";
 class Apple {
   instance = null;
 
-  set(x, y) {
+  setState(x, y) {
     this.instance = { x, y };
   }
 
