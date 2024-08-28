@@ -15,9 +15,6 @@ const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
 
 class Player {
-  body = null;
-  direction = null;
-  deltaLength = null;
   touchStart = null;
 
   constructor() {
@@ -25,6 +22,15 @@ class Player {
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.reset();
+  }
+
+  reset() {
+    this.body = [
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+    ];
+    this.direction = "up";
+    this.deltaLength = 3;
   }
 
   setDirection(direction) {
@@ -119,59 +125,8 @@ class Player {
     }
   }
 
-  collideRect(rect) {
-    const head = { ...this.body.at(-1), width: 1, height: 1 };
-
-    return (
-      head.x < rect.x + rect.width &&
-      head.x + head.width > rect.x &&
-      head.y < rect.y + rect.height &&
-      head.y + head.height > rect.y
-    );
-  }
-
-  collideApple(apple) {
-    return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
-  }
-
-  collideItself() {
-    for (let i = 0; i < this.body.length - 4; i++) {
-      const [point, nextPoint] = this.body.slice(i, i + 2);
-      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
-      const rect = {
-        x: point.x,
-        y: point.y,
-        width: Math.abs(deltaX) + 1,
-        height: Math.abs(deltaY) + 1,
-      };
-
-      if (deltaX < 0 || deltaY < 0) {
-        [rect.x, rect.y] = [nextPoint.x, nextPoint.y];
-      }
-
-      if (this.collideRect(rect)) {
-        return true;
-      }
-    }
-  }
-
-  collideEdges() {
-    const head = this.body.at(-1);
-
-    return head.x < 0.5 || head.x > FIELD_SIZE - 0.5 || head.y < 0.5 || head.y > FIELD_SIZE - 0.5;
-  }
-
   grow() {
     this.deltaLength += 1;
-  }
-
-  reset() {
-    this.body = [
-      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
-      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
-    ];
-    this.direction = "up";
-    this.deltaLength = 3;
   }
 
   respawn() {

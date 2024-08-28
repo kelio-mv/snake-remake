@@ -3,13 +3,18 @@ import { FIELD_SIZE } from "./constants.js";
 const PLAYER_SPEED = 10;
 
 class Player {
-  body = null;
-  direction = null;
-  deltaLength = null;
-  dead = false;
-
   constructor() {
     this.reset();
+  }
+
+  reset() {
+    this.body = [
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
+    ];
+    this.direction = "up";
+    this.deltaLength = 3;
+    this.dead = false;
   }
 
   moveHead(deltaTime) {
@@ -102,13 +107,8 @@ class Player {
     this.deltaLength += 1;
   }
 
-  reset() {
-    this.body = [
-      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
-      { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
-    ];
-    this.direction = "up";
-    this.deltaLength = 3;
+  die() {
+    this.dead = true;
   }
 
   respawn() {
