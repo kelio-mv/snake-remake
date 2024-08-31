@@ -1,4 +1,4 @@
-import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
+import { BORDER_WIDTH } from "./constants.js";
 
 const APPLE_COLOR = "#dc2626";
 const APPLE_BORDER_COLOR = "#000";
