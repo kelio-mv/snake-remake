@@ -9,7 +9,7 @@ class RemotePlayer extends Player {
   }
 
   setState(body, direction, deltaLength) {
-    this.body = body;
+    this.body = body.map(([x, y]) => ({ x, y }));
     this.direction = direction;
     this.deltaLength = deltaLength;
   }

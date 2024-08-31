@@ -73,7 +73,13 @@ class LocalPlayer extends Player {
   }
 
   getState() {
-    return [this.body, this.direction, this.deltaLength];
+    const truncateNumber = (number) => Number(number.toFixed(2));
+
+    return [
+      this.body.map(({ x, y }) => [truncateNumber(x), truncateNumber(y)]),
+      this.direction,
+      truncateNumber(this.deltaLength),
+    ];
   }
 }
 
