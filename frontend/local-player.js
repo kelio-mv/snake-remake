@@ -64,9 +64,9 @@ class LocalPlayer extends Player {
     const [deltaX, deltaY] = [touch.clientX - this.touchStart.x, touch.clientY - this.touchStart.y];
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      this.setDirection(deltaX > 0 ? "right" : "left");
+      this.setDirection(deltaX < 0 ? "left" : "right");
     } else {
-      this.setDirection(deltaY > 0 ? "down" : "up");
+      this.setDirection(deltaY < 0 ? "up" : "down");
     }
 
     this.touchStart = null;
