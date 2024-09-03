@@ -13,8 +13,10 @@ const DIRECTIONS_FROM_KEYS = {
 };
 const DIRECTION_KEYS = Object.keys(DIRECTIONS_FROM_KEYS);
 const OPPOSITE_DIRECTIONS = { up: "down", down: "up", left: "right", right: "left" };
+const NET_FLOAT_PRECISION = 2; // number of decimal places
 
 class LocalPlayer extends Player {
+  static roundNumber = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
   touchStart = null;
 
   constructor() {
@@ -73,12 +75,12 @@ class LocalPlayer extends Player {
   }
 
   getState() {
-    const truncateNumber = (number) => Number(number.toFixed(2));
+    const { roundNumber } = LocalPlayer;
 
     return [
-      this.body.map(({ x, y }) => [truncateNumber(x), truncateNumber(y)]),
+      this.body.map(({ x, y }) => [roundNumber(x), roundNumber(y)]),
       this.direction,
-      truncateNumber(this.deltaLength),
+      roundNumber(this.deltaLength),
     ];
   }
 }
