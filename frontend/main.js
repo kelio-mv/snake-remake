@@ -20,6 +20,7 @@ homeNicknameInput.addEventListener("input", () => {
 
 homeForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  homeNicknameInput.disabled = true;
   homeJoinButton.disabled = true;
   homeJoinLabel.hidden = true;
   homeJoinLoader.hidden = false;

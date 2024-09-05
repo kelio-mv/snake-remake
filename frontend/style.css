@@ -66,6 +66,10 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.home-nickname-input:disabled {
+  color: inherit;
+}
+
 .home-join-button {
   display: block;
   background-color: #14532d;
