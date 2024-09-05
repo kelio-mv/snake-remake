@@ -63,12 +63,27 @@ body {
 }
 
 .home-nickname-input::placeholder {
-  color: rgb(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .home-join-button {
+  display: block;
   background-color: #14532d;
   cursor: pointer;
+}
+
+.home-join-button:disabled {
+  pointer-events: none;
+}
+
+.home-join-loader {
+  margin: auto;
+  width: 16px;
+  height: 16px;
+  border: 3px solid white;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 .game-page {
@@ -81,4 +96,13 @@ body {
 .game-canvas {
   width: 100vmin;
   height: 100vmin;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -5,6 +5,9 @@ import socket from "./socket.js";
 const homePage = document.querySelector(".home-page");
 const homeForm = document.querySelector(".home-form");
 const homeNicknameInput = document.querySelector(".home-nickname-input");
+const homeJoinButton = document.querySelector(".home-join-button");
+const homeJoinLabel = document.querySelector(".home-join-label");
+const homeJoinLoader = document.querySelector(".home-join-loader");
 const gamePage = document.querySelector(".game-page");
 
 homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
@@ -17,6 +20,9 @@ homeNicknameInput.addEventListener("input", () => {
 
 homeForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  homeJoinButton.disabled = true;
+  homeJoinLabel.hidden = true;
+  homeJoinLoader.hidden = false;
   socket.connect();
 });
 
