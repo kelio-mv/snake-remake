@@ -62,12 +62,9 @@ body {
   background-color: #166534;
 }
 
-.home-nickname-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
+.home-nickname-input::placeholder,
 .home-nickname-input:disabled {
-  color: inherit;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .home-join-button {
