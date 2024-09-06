@@ -6,7 +6,7 @@ const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
 const apple = new Apple();
 
-function isNicknameAlreadyUsed(nickname) {
+function isNicknameInUse(nickname) {
   for (const [id, socket] of io.sockets.sockets) {
     if (socket.nickname === nickname) {
       return true;
@@ -17,7 +17,7 @@ function isNicknameAlreadyUsed(nickname) {
 io.use((socket, next) => {
   const { nickname } = socket.handshake.auth;
 
-  if (isNicknameAlreadyUsed(nickname)) {
+  if (isNicknameInUse(nickname)) {
     next(new Error("login error"));
     return;
   }
