@@ -59,6 +59,10 @@ io.on("connection", (socket) => {
      */
     socket.player.respawn();
   });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("remove_player", socket.nickname);
+  });
 });
 
 console.log("Server is running on port", port);

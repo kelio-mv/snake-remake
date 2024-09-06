@@ -59,6 +59,10 @@ function init() {
     remotePlayers.setPlayerState(nickname, state);
   });
 
+  socket.on("remove_player", (nickname) => {
+    remotePlayers.removePlayer(nickname);
+  });
+
   socket.on("respawn", () => {
     localPlayer.respawn();
     socket.emit("respawn");
@@ -69,3 +73,5 @@ function init() {
 }
 
 export default init;
+
+// fix reconnect bug
