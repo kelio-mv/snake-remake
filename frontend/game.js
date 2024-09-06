@@ -11,6 +11,7 @@ const background = new Background();
 const localPlayer = new LocalPlayer();
 const remotePlayers = new RemotePlayers();
 const apple = new Apple();
+const state = { lastUpdate: null, animationFrame: null };
 
 function resize() {
   const canvasSize = Math.min(innerWidth, innerHeight) * devicePixelRatio;
@@ -21,33 +22,38 @@ function resize() {
   ctx.scale(scaleFactor, scaleFactor);
 }
 
-function update(deltaTime) {
+function update() {
+  const now = Date.now() / 1000;
+  const deltaTime = now - state.lastUpdate;
+
   localPlayer.update(deltaTime);
   socket.emit("set_player", localPlayer.getState());
-}
 
-function draw() {
   background.draw(ctx);
   localPlayer.draw(ctx);
   remotePlayers.draw(ctx);
   apple.draw(ctx);
+
+  state.lastUpdate = now;
+  state.animationFrame = requestAnimationFrame(update);
 }
 
-function loop(lastTick) {
-  const now = Date.now() / 1000;
-  const deltaTime = lastTick ? now - lastTick : 0;
-
-  update(deltaTime);
-  draw();
-  requestAnimationFrame(() => loop(now));
-}
-
-function init() {
+function start() {
   addEventListener("keydown", localPlayer.handleKeyDown);
   addEventListener("touchstart", localPlayer.handleTouchStart);
   addEventListener("touchmove", localPlayer.handleTouchMove);
-  addEventListener("resize", resize);
+  state.lastUpdate = Date.now() / 1000;
+  state.animationFrame = requestAnimationFrame(update);
+}
 
+function stop() {
+  removeEventListener("keydown", localPlayer.handleKeyDown);
+  removeEventListener("touchstart", localPlayer.handleTouchStart);
+  removeEventListener("touchmove", localPlayer.handleTouchMove);
+  cancelAnimationFrame(state.animationFrame);
+}
+
+function setup() {
   socket.on("set_apple", (state, grow) => {
     apple.setState(...state);
     if (grow) {
@@ -68,10 +74,11 @@ function init() {
     socket.emit("respawn");
   });
 
+  addEventListener("resize", resize);
+
   resize();
-  loop();
 }
 
-export default init;
+setup();
 
-// fix reconnect bug
+export { start as startGame, stop as stopGame };

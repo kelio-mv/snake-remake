@@ -1,5 +1,5 @@
 import { FIELD_SIZE, BG_LIGHT_COLOR, BG_DARK_COLOR } from "./constants.js";
-import initGame from "./game.js";
+import { startGame, stopGame } from "./game.js";
 import socket from "./socket.js";
 
 const homePage = document.querySelector(".home-page");
@@ -30,7 +30,7 @@ homeForm.addEventListener("submit", (e) => {
 socket.on("connect", () => {
   homePage.hidden = true;
   gamePage.hidden = false;
-  initGame();
+  startGame();
 });
 
 socket.on("connect_error", (err) => {
@@ -41,6 +41,12 @@ socket.on("connect_error", (err) => {
     homeJoinLabel.hidden = false;
     homeJoinLoader.hidden = true;
   }
+});
+
+socket.on("disconnect", () => {
+  stopGame();
+  homePage.hidden = false;
+  gamePage.hidden = true;
 });
 
 export default homeNicknameInput;
