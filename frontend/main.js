@@ -14,6 +14,8 @@ homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
 homePage.style.setProperty("--bg-dark-color", BG_DARK_COLOR);
 homePage.style.setProperty("--field-size", FIELD_SIZE);
 
+homeNicknameInput.value = localStorage.getItem("nickname");
+
 homeNicknameInput.addEventListener("input", () => {
   homeNicknameInput.value = homeNicknameInput.value.replace(/[^a-zA-Z0-9_]/g, "");
 });
@@ -28,6 +30,7 @@ homeForm.addEventListener("submit", (e) => {
 });
 
 socket.on("connect", () => {
+  localStorage.setItem("nickname", homeNicknameInput.value);
   homePage.hidden = true;
   gamePage.hidden = false;
   startGame();
