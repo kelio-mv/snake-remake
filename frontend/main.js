@@ -33,4 +33,14 @@ socket.on("connect", () => {
   initGame();
 });
 
+socket.on("connect_error", (err) => {
+  if (err.message === "login error") {
+    alert("Este nome de usuário já está em uso.");
+    homeNicknameInput.disabled = false;
+    homeJoinButton.disabled = false;
+    homeJoinLabel.hidden = false;
+    homeJoinLoader.hidden = true;
+  }
+});
+
 export default homeNicknameInput;
