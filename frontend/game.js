@@ -65,14 +65,6 @@ function setup() {
     remotePlayers.setPlayerState(nickname, state);
   });
 
-  socket.on("player_respawn", (nickname) => {
-    remotePlayers.respawnPlayer(nickname);
-  });
-
-  socket.on("player_immunity_expire", (nickname) => {
-    remotePlayers.removePlayerImmunity(nickname);
-  });
-
   socket.on("player_connect", (nickname) => {
     remotePlayers.addPlayer(nickname);
   });
@@ -81,13 +73,21 @@ function setup() {
     remotePlayers.removePlayer(nickname);
   });
 
-  socket.on("immunity_expire", () => {
-    localPlayer.removeImmunity();
+  socket.on("immunity_expire", (nickname) => {
+    if (nickname) {
+      remotePlayers.removePlayerImmunity(nickname);
+    } else {
+      localPlayer.removeImmunity();
+    }
   });
 
-  socket.on("respawn", () => {
-    localPlayer.respawn();
-    socket.emit("respawn");
+  socket.on("respawn", (nickname) => {
+    if (nickname) {
+      remotePlayers.respawnPlayer(nickname);
+    } else {
+      localPlayer.respawn();
+      socket.emit("respawn");
+    }
   });
 
   addEventListener("resize", resize);

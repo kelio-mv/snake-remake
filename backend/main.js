@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
   setTimeout(() => {
     player.removeImmunity();
     socket.emit("immunity_expire");
-    socket.broadcast.emit("player_immunity_expire", socket.nickname);
+    socket.broadcast.emit("immunity_expire", socket.nickname);
   }, 1000 * IMMUNITY_TIMEOUT);
 
   socket.on("update", (state) => {
@@ -91,12 +91,12 @@ io.on("connection", (socket) => {
      * causing the player to respawn before receiving the last state update that should have been ignored.
      */
     player.respawn();
-    socket.broadcast.emit("player_respawn", socket.nickname);
+    socket.broadcast.emit("respawn", socket.nickname);
 
     setTimeout(() => {
       player.removeImmunity();
       socket.emit("immunity_expire");
-      socket.broadcast.emit("player_immunity_expire", socket.nickname);
+      socket.broadcast.emit("immunity_expire", socket.nickname);
     }, 1000 * IMMUNITY_TIMEOUT);
   });
 
