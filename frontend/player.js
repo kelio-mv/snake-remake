@@ -3,8 +3,9 @@ import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 const PLAYER_SPEED = 10;
 
 class Player {
-  constructor(color) {
+  constructor(color, hasSpawnImmunity = true) {
     this.color = color;
+    this.hasSpawnImmunity = hasSpawnImmunity;
     this.reset();
   }
 
@@ -66,8 +67,12 @@ class Player {
   }
 
   respawn() {
-    // should i even keep this?
     this.reset();
+    this.hasSpawnImmunity = true;
+  }
+
+  removeImmunity() {
+    this.hasSpawnImmunity = false;
   }
 
   update(deltaTime) {
@@ -81,6 +86,10 @@ class Player {
   }
 
   draw(ctx) {
+    if (this.hasSpawnImmunity) {
+      ctx.globalAlpha = 0.5;
+    }
+
     ctx.fillStyle = "#000";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;
@@ -118,6 +127,8 @@ class Player {
       ctx.lineTo(nextPoint.x, nextPoint.y);
       ctx.stroke();
     });
+
+    ctx.globalAlpha = 1;
   }
 
   getState() {

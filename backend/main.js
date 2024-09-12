@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import Apple from "./apple.js";
 import Player from "./player.js";
+import { IMMUNITY_TIMEOUT } from "./constants.js";
 
 const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
@@ -34,11 +35,18 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   const { player } = socket;
 
+  socket.broadcast.emit("player_connect", socket.nickname);
   socket.emit("apple", apple.getState());
 
+  setTimeout(() => {
+    player.removeImmunity();
+    socket.emit("immunity_expire");
+    socket.broadcast.emit("player_immunity_expire", socket.nickname);
+  }, 1000 * IMMUNITY_TIMEOUT);
+
   socket.on("update", (state) => {
+    // Ignore state updates sent before respawn to prevent multiple deaths from occurring
     if (player.dead) {
-      // Ignore state updates sent before respawn to prevent multiple deaths from occurring
       return;
     }
 
@@ -49,10 +57,12 @@ io.on("connection", (socket) => {
       const opponent = oppSocket.player;
 
       if (!opponent.dead && player.collidePlayer(opponent)) {
-        player.die();
-        socket.emit("respawn");
+        if (!player.hasSpawnImmunity) {
+          player.die();
+          socket.emit("respawn");
+        }
 
-        if (opponent.collidePlayer(player)) {
+        if (!opponent.hasSpawnImmunity && opponent.collidePlayer(player)) {
           opponent.die();
           oppSocket.emit("respawn");
         }
@@ -81,6 +91,13 @@ io.on("connection", (socket) => {
      * causing the player to respawn before receiving the last state update that should have been ignored.
      */
     player.respawn();
+    socket.broadcast.emit("player_respawn", socket.nickname);
+
+    setTimeout(() => {
+      player.removeImmunity();
+      socket.emit("immunity_expire");
+      socket.broadcast.emit("player_immunity_expire", socket.nickname);
+    }, 1000 * IMMUNITY_TIMEOUT);
   });
 
   socket.on("disconnect", () => {

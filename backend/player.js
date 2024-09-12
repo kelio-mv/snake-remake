@@ -15,6 +15,7 @@ class Player {
     this.direction = "up";
     this.deltaLength = 3;
     this.dead = false;
+    this.hasSpawnImmunity = true;
   }
 
   moveHead(deltaTime) {
@@ -114,6 +115,10 @@ class Player {
 
   respawn() {
     this.reset();
+  }
+
+  removeImmunity() {
+    this.hasSpawnImmunity = false;
   }
 
   update(deltaTime) {

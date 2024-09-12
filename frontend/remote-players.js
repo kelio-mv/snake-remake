@@ -3,8 +3,8 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname) {
-    super(REMOTE_PLAYER_COLOR);
+  constructor(nickname, hasSpawnImmunity) {
+    super(REMOTE_PLAYER_COLOR, hasSpawnImmunity);
     this.nickname = nickname;
   }
 
@@ -21,10 +21,27 @@ class RemotePlayers {
   setPlayerState(nickname, state) {
     let player = this.players.find((player) => player.nickname === nickname);
     if (!player) {
-      player = new RemotePlayer(nickname);
+      player = new RemotePlayer(nickname, false);
       this.players.push(player);
     }
     player.setState(...state);
+  }
+
+  respawnPlayer(nickname) {
+    // what if player data isn't loaded yet?
+    const player = this.players.find((player) => player.nickname === nickname);
+    player.respawn();
+  }
+
+  removePlayerImmunity(nickname) {
+    // what if player data isn't loaded yet?
+    const player = this.players.find((player) => player.nickname === nickname);
+    player.removeImmunity();
+  }
+
+  addPlayer(nickname) {
+    const player = new RemotePlayer(nickname);
+    this.players.push(player);
   }
 
   removePlayer(nickname) {

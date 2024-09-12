@@ -65,8 +65,24 @@ function setup() {
     remotePlayers.setPlayerState(nickname, state);
   });
 
+  socket.on("player_respawn", (nickname) => {
+    remotePlayers.respawnPlayer(nickname);
+  });
+
+  socket.on("player_immunity_expire", (nickname) => {
+    remotePlayers.removePlayerImmunity(nickname);
+  });
+
+  socket.on("player_connect", (nickname) => {
+    remotePlayers.addPlayer(nickname);
+  });
+
   socket.on("player_disconnect", (nickname) => {
     remotePlayers.removePlayer(nickname);
+  });
+
+  socket.on("immunity_expire", () => {
+    localPlayer.removeImmunity();
   });
 
   socket.on("respawn", () => {
@@ -91,3 +107,4 @@ export { start as startGame, stop as stopGame };
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
 // improve socket.io event names
+// improve immune player drawing by changing start and end angles

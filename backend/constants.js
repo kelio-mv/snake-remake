@@ -1,3 +1,4 @@
 const FIELD_SIZE = 40;
+const IMMUNITY_TIMEOUT = 2;
 
-export { FIELD_SIZE };
+export { FIELD_SIZE, IMMUNITY_TIMEOUT };
