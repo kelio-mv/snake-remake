@@ -14,6 +14,10 @@ function isNicknameInUse(nickname) {
   }
 }
 
+function socketsExcept(socket) {
+  return Array.from(io.sockets.sockets.values()).filter((s) => s !== socket);
+}
+
 io.use((socket, next) => {
   const { nickname } = socket.handshake.auth;
 
@@ -23,31 +27,55 @@ io.use((socket, next) => {
   }
 
   socket.nickname = nickname;
+  socket.player = new Player();
   next();
 });
 
 io.on("connection", (socket) => {
-  socket.player = new Player();
+  const { player } = socket;
 
-  socket.emit("set_apple", apple.getState());
+  socket.emit("apple", apple.getState());
 
-  socket.on("set_player", (state) => {
-    if (socket.player.dead) {
+  socket.on("update", (state) => {
+    if (player.dead) {
       // Ignore state updates sent before respawn to prevent multiple deaths from occurring
       return;
     }
 
-    socket.player.setState(...state);
+    player.setState(...state);
+    socket.broadcast.emit("player", socket.nickname, state);
 
-    if (socket.player.collideItself() || socket.player.collideEdges()) {
-      socket.player.die();
+    // const collidedOppSocket = socketsExcept(socket).find(
+    //   (oppSocket) => !oppSocket.player.dead && player.collidePlayer(oppSocket.player)
+    // );
+
+    for (const oppSocket of socketsExcept(socket)) {
+      const opponent = oppSocket.player;
+
+      if (!opponent.dead && player.collidePlayer(opponent)) {
+        player.die();
+        socket.emit("respawn");
+
+        if (opponent.collidePlayer(player)) {
+          opponent.die();
+          oppSocket.emit("respawn");
+        }
+
+        // you may need to warn players about their opponents' deaths
+        return;
+      }
+    }
+
+    if (player.collideItself() || player.collideEdges()) {
+      player.die();
       socket.emit("respawn");
-    } else if (socket.player.collideApple(apple.instance)) {
+      return;
+    }
+
+    if (player.collideApple(apple.instance)) {
       apple.replace();
-      socket.emit("set_apple", apple.getState(), true);
-      socket.broadcast.emit("set_apple", apple.getState());
-    } else {
-      socket.broadcast.emit("set_player", socket.nickname, state);
+      socket.emit("apple", apple.getState(), true);
+      socket.broadcast.emit("apple", apple.getState());
     }
   });
 
@@ -57,12 +85,14 @@ io.on("connection", (socket) => {
      * I believe this happened because socket.io prioritizes acknowledgment packets over normal events,
      * causing the player to respawn before receiving the last state update that should have been ignored.
      */
-    socket.player.respawn();
+    player.respawn();
   });
 
   socket.on("disconnect", () => {
-    socket.broadcast.emit("remove_player", socket.nickname);
+    socket.broadcast.emit("player_disconnect", socket.nickname);
   });
 });
 
 console.log("Server is running on port", port);
+
+// Fix CORS origin

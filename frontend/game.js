@@ -27,7 +27,7 @@ function update() {
   const deltaTime = now - state.lastUpdate;
 
   localPlayer.update(deltaTime);
-  socket.emit("set_player", localPlayer.getState());
+  socket.emit("update", localPlayer.getState());
 
   background.draw(ctx);
   localPlayer.draw(ctx);
@@ -54,18 +54,18 @@ function stop() {
 }
 
 function setup() {
-  socket.on("set_apple", (state, grow) => {
+  socket.on("apple", (state, grow) => {
     apple.setState(...state);
     if (grow) {
       localPlayer.grow();
     }
   });
 
-  socket.on("set_player", (nickname, state) => {
+  socket.on("player", (nickname, state) => {
     remotePlayers.setPlayerState(nickname, state);
   });
 
-  socket.on("remove_player", (nickname) => {
+  socket.on("player_disconnect", (nickname) => {
     remotePlayers.removePlayer(nickname);
   });
 
@@ -82,3 +82,12 @@ function setup() {
 setup();
 
 export { start as startGame, stop as stopGame };
+
+// add respawn immunity
+// display players' nicknames
+// display "nickname already in use" warning without the function alert
+// sounds and music
+// maybe different colors for players
+// decide how to properly handle disconnections and reconnections
+// decide how to properly optimize data transfer in order to reduce lag
+// improve socket.io event names

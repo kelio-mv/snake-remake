@@ -61,6 +61,20 @@ class Player {
     }
   }
 
+  getRects() {
+    return this.body.slice(0, -1).map((point, index) => {
+      const nextPoint = this.body[index + 1];
+      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
+
+      return {
+        x: deltaX > 0 ? point.x : nextPoint.x,
+        y: deltaY > 0 ? point.y : nextPoint.y,
+        width: Math.abs(deltaX) + 1,
+        height: Math.abs(deltaY) + 1,
+      };
+    });
+  }
+
   collideRect(rect) {
     const head = { ...this.body.at(-1), width: 1, height: 1 };
 
@@ -72,35 +86,22 @@ class Player {
     );
   }
 
-  collideApple(apple) {
-    return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
+  collidePlayer(player) {
+    return player.getRects().some((rect) => this.collideRect(rect));
   }
 
   collideItself() {
-    for (let i = 0; i < this.body.length - 4; i++) {
-      const [point, nextPoint] = this.body.slice(i, i + 2);
-      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
-      const rect = {
-        x: point.x,
-        y: point.y,
-        width: Math.abs(deltaX) + 1,
-        height: Math.abs(deltaY) + 1,
-      };
-
-      if (deltaX < 0 || deltaY < 0) {
-        [rect.x, rect.y] = [nextPoint.x, nextPoint.y];
-      }
-
-      if (this.collideRect(rect)) {
-        return true;
-      }
-    }
+    const rects = this.getRects().slice(0, -3);
+    return rects.some((rect) => this.collideRect(rect));
   }
 
   collideEdges() {
     const head = this.body.at(-1);
-
     return head.x < 0.5 || head.x > FIELD_SIZE - 0.5 || head.y < 0.5 || head.y > FIELD_SIZE - 0.5;
+  }
+
+  collideApple(apple) {
+    return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
   }
 
   grow() {
