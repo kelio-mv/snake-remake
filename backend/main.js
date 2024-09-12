@@ -45,10 +45,6 @@ io.on("connection", (socket) => {
     player.setState(...state);
     socket.broadcast.emit("player", socket.nickname, state);
 
-    // const collidedOppSocket = socketsExcept(socket).find(
-    //   (oppSocket) => !oppSocket.player.dead && player.collidePlayer(oppSocket.player)
-    // );
-
     for (const oppSocket of socketsExcept(socket)) {
       const opponent = oppSocket.player;
 
@@ -61,7 +57,6 @@ io.on("connection", (socket) => {
           oppSocket.emit("respawn");
         }
 
-        // you may need to warn players about their opponents' deaths
         return;
       }
     }
@@ -96,3 +91,5 @@ io.on("connection", (socket) => {
 console.log("Server is running on port", port);
 
 // Fix CORS origin
+// We may need to warn players about their opponents' deaths
+// Maybe we should broadcast player state after collision checks to reduce lag
