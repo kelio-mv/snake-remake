@@ -42,8 +42,11 @@ io.on("connection", (socket) => {
     }, 1000 * SPAWN_PROTECTION_TIME);
   };
 
-  socket.broadcast.emit("player_connect", socket.nickname);
+  socketsExcept(socket).forEach((oppSocket) => {
+    socket.emit("player_add", oppSocket.nickname, oppSocket.player.getState());
+  });
   socket.emit("apple", apple.getState());
+  socket.broadcast.emit("player_add", socket.nickname);
   socket.protectionTimeout = setProtectionTimeout();
 
   socket.on("update", (state) => {

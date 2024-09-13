@@ -3,10 +3,8 @@ import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 const PLAYER_SPEED = 10;
 
 class Player {
-  constructor(color, _protected = true) {
-    // setting a default value for protected looks weird
+  constructor(color) {
     this.color = color;
-    this.protected = _protected;
     this.reset();
   }
 
@@ -17,6 +15,7 @@ class Player {
     ];
     this.direction = "up";
     this.deltaLength = 3;
+    this.protected = true;
   }
 
   moveHead(deltaTime) {
@@ -65,11 +64,6 @@ class Player {
 
   grow() {
     this.deltaLength += 1;
-  }
-
-  respawn() {
-    this.reset();
-    this.protected = true;
   }
 
   disableProtection() {

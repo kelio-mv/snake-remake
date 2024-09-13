@@ -3,9 +3,15 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname, _protected) {
-    super(REMOTE_PLAYER_COLOR, _protected);
+  constructor(nickname, state) {
+    super(REMOTE_PLAYER_COLOR);
     this.nickname = nickname;
+
+    if (state) {
+      this.setState(...state);
+      this.disableProtection();
+      // fix me: player might have protection tho
+    }
   }
 
   setState(body, direction, deltaLength) {
@@ -18,34 +24,28 @@ class RemotePlayer extends Player {
 class RemotePlayers {
   players = [];
 
-  setPlayerState(nickname, state) {
-    let player = this.players.find((player) => player.nickname === nickname);
-    if (!player) {
-      player = new RemotePlayer(nickname, false);
-      this.players.push(player);
-    }
-    player.setState(...state);
-  }
-
-  respawnPlayer(nickname) {
-    // what if player data isn't loaded yet?
-    const player = this.players.find((player) => player.nickname === nickname);
-    player.respawn();
-  }
-
-  disablePlayerProtection(nickname) {
-    // what if player data isn't loaded yet?
-    const player = this.players.find((player) => player.nickname === nickname);
-    player.disableProtection();
-  }
-
-  addPlayer(nickname) {
-    const player = new RemotePlayer(nickname);
-    this.players.push(player);
+  addPlayer(nickname, state) {
+    this.players.push(new RemotePlayer(nickname, state));
   }
 
   removePlayer(nickname) {
     this.players = this.players.filter((player) => player.nickname !== nickname);
+  }
+
+  getPlayer(nickname) {
+    return this.players.find((player) => player.nickname === nickname);
+  }
+
+  setPlayerState(nickname, state) {
+    this.getPlayer(nickname).setState(...state);
+  }
+
+  resetPlayer(nickname) {
+    this.getPlayer(nickname).reset();
+  }
+
+  disablePlayerProtection(nickname) {
+    this.getPlayer(nickname).disableProtection();
   }
 
   draw(ctx) {

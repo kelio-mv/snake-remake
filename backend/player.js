@@ -119,6 +119,11 @@ class Player {
     }
   }
 
+  getState() {
+    // We don't need to round the numbers yet
+    return [this.body.map(({ x, y }) => [x, y]), this.direction, this.deltaLength];
+  }
+
   setState(body, direction, deltaLength) {
     this.body = body.map(([x, y]) => ({ x, y }));
     this.direction = direction;

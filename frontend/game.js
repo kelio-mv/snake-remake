@@ -65,8 +65,8 @@ function setup() {
     remotePlayers.setPlayerState(nickname, state);
   });
 
-  socket.on("player_connect", (nickname) => {
-    remotePlayers.addPlayer(nickname);
+  socket.on("player_add", (nickname, state) => {
+    remotePlayers.addPlayer(nickname, state);
   });
 
   socket.on("player_disconnect", (nickname) => {
@@ -83,9 +83,9 @@ function setup() {
 
   socket.on("respawn", (nickname) => {
     if (nickname) {
-      remotePlayers.respawnPlayer(nickname);
+      remotePlayers.resetPlayer(nickname);
     } else {
-      localPlayer.respawn();
+      localPlayer.reset();
       socket.emit("respawn");
     }
   });
