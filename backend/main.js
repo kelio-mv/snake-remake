@@ -58,13 +58,17 @@ io.on("connection", (socket) => {
     for (const oppSocket of socketsExcept(socket)) {
       const opponent = oppSocket.player;
 
-      if (!opponent.dead && player.collidePlayer(opponent)) {
-        if (!player.hasSpawnImmunity) {
+      if (opponent.dead || (player.hasImmunity && opponent.hasImmunity)) {
+        continue;
+      }
+
+      if (player.collidePlayer(opponent)) {
+        if (!player.hasImmunity) {
           player.die();
           socket.emit("respawn");
         }
 
-        if (!opponent.hasSpawnImmunity && opponent.collidePlayer(player)) {
+        if (!opponent.hasImmunity && opponent.collidePlayer(player)) {
           opponent.die();
           oppSocket.emit("respawn");
         }

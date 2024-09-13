@@ -3,8 +3,8 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname, hasSpawnImmunity) {
-    super(REMOTE_PLAYER_COLOR, hasSpawnImmunity);
+  constructor(nickname, hasImmunity) {
+    super(REMOTE_PLAYER_COLOR, hasImmunity);
     this.nickname = nickname;
   }
 

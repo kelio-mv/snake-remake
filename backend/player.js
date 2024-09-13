@@ -15,7 +15,7 @@ class Player {
     this.direction = "up";
     this.deltaLength = 3;
     this.dead = false;
-    this.hasSpawnImmunity = true;
+    this.hasImmunity = true;
   }
 
   moveHead(deltaTime) {
@@ -118,7 +118,7 @@ class Player {
   }
 
   removeImmunity() {
-    this.hasSpawnImmunity = false;
+    this.hasImmunity = false;
   }
 
   update(deltaTime) {
