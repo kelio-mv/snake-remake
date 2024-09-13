@@ -43,7 +43,12 @@ io.on("connection", (socket) => {
   };
 
   socketsExcept(socket).forEach((oppSocket) => {
-    socket.emit("player_add", oppSocket.nickname, oppSocket.player.getState());
+    socket.emit(
+      "player_add",
+      oppSocket.nickname,
+      oppSocket.player.getState(),
+      !oppSocket.player.protected
+    );
   });
   socket.emit("apple", apple.getState());
   socket.broadcast.emit("player_add", socket.nickname);
@@ -55,7 +60,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    player.setState(...state);
+    player.setState(state);
     socket.broadcast.emit("player", socket.nickname, state);
 
     for (const oppSocket of socketsExcept(socket)) {

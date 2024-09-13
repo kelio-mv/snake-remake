@@ -76,12 +76,7 @@ class LocalPlayer extends Player {
 
   getState() {
     const { roundNumber } = LocalPlayer;
-
-    return [
-      this.body.map(({ x, y }) => [roundNumber(x), roundNumber(y)]),
-      this.direction,
-      roundNumber(this.deltaLength),
-    ];
+    return this.body.map(({ x, y }) => [roundNumber(x), roundNumber(y)]);
   }
 }
 

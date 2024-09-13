@@ -18,50 +18,6 @@ class Player {
     this.protected = true;
   }
 
-  moveHead(deltaTime) {
-    const head = this.body.at(-1);
-    const deltaPos = deltaTime * PLAYER_SPEED;
-    const [deltaX, deltaY] = {
-      up: [0, -deltaPos],
-      down: [0, deltaPos],
-      left: [-deltaPos, 0],
-      right: [deltaPos, 0],
-    }[this.direction];
-
-    head.x += deltaX;
-    head.y += deltaY;
-  }
-
-  moveTail(deltaTime) {
-    const [tail, target] = this.body;
-    const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
-    const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
-    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
-    const [deltaX, deltaY] = [
-      deltaPos * Math.sign(target.x - tail.x),
-      deltaPos * Math.sign(target.y - tail.y),
-    ];
-
-    tail.x += deltaX;
-    tail.y += deltaY;
-
-    if (tail.x === target.x && tail.y === target.y) {
-      this.body.shift();
-      this.moveTail(remainingTime);
-    }
-  }
-
-  handleGrowth(deltaTime) {
-    const deltaPos = deltaTime * PLAYER_SPEED;
-    this.deltaLength -= deltaPos;
-
-    if (this.deltaLength < 0) {
-      const remainingTime = -this.deltaLength / PLAYER_SPEED;
-      this.moveTail(remainingTime);
-      this.deltaLength = 0;
-    }
-  }
-
   getRects() {
     return this.body.slice(0, -1).map((point, index) => {
       const nextPoint = this.body[index + 1];
@@ -105,29 +61,12 @@ class Player {
     return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
   }
 
-  grow() {
-    this.deltaLength += 1;
-  }
-
-  update(deltaTime) {
-    this.moveHead(deltaTime);
-
-    if (this.deltaLength > 0) {
-      this.handleGrowth(deltaTime);
-    } else {
-      this.moveTail(deltaTime);
-    }
-  }
-
   getState() {
-    // We don't need to round the numbers yet
-    return [this.body.map(({ x, y }) => [x, y]), this.direction, this.deltaLength];
+    return this.body.map(({ x, y }) => [x, y]);
   }
 
-  setState(body, direction, deltaLength) {
+  setState(body) {
     this.body = body.map(([x, y]) => ({ x, y }));
-    this.direction = direction;
-    this.deltaLength = deltaLength;
   }
 }
 

@@ -3,29 +3,29 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname, state) {
+  constructor(nickname, state, unprotected) {
     super(REMOTE_PLAYER_COLOR);
     this.nickname = nickname;
 
     if (state) {
-      this.setState(...state);
-      this.disableProtection();
-      // fix me: player might have protection tho
+      this.setState(state);
+
+      if (unprotected) {
+        this.disableProtection();
+      }
     }
   }
 
-  setState(body, direction, deltaLength) {
+  setState(body) {
     this.body = body.map(([x, y]) => ({ x, y }));
-    this.direction = direction;
-    this.deltaLength = deltaLength;
   }
 }
 
 class RemotePlayers {
   players = [];
 
-  addPlayer(nickname, state) {
-    this.players.push(new RemotePlayer(nickname, state));
+  addPlayer(nickname, state, unprotected) {
+    this.players.push(new RemotePlayer(nickname, state, unprotected));
   }
 
   removePlayer(nickname) {
@@ -37,7 +37,7 @@ class RemotePlayers {
   }
 
   setPlayerState(nickname, state) {
-    this.getPlayer(nickname).setState(...state);
+    this.getPlayer(nickname).setState(state);
   }
 
   resetPlayer(nickname) {

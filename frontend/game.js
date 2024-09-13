@@ -65,8 +65,8 @@ function setup() {
     remotePlayers.setPlayerState(nickname, state);
   });
 
-  socket.on("player_add", (nickname, state) => {
-    remotePlayers.addPlayer(nickname, state);
+  socket.on("player_add", (nickname, state, unprotected) => {
+    remotePlayers.addPlayer(nickname, state, unprotected);
   });
 
   socket.on("player_disconnect", (nickname) => {
