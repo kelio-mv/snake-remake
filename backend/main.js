@@ -80,9 +80,16 @@ io.on("connection", (socket) => {
       }
     }
 
-    if (player.collideItself() || player.collideEdges()) {
+    if (!player.protected && player.collideItself()) {
       player.dead = true;
       socket.emit("respawn");
+      return;
+    }
+
+    if (player.collideEdges()) {
+      player.dead = true;
+      socket.emit("respawn");
+      clearTimeout(socket.protectionTimeout);
       return;
     }
 
@@ -105,8 +112,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    clearTimeout(socket.protectionTimeout);
     socket.broadcast.emit("player_disconnect", socket.nickname);
+    clearTimeout(socket.protectionTimeout);
   });
 });
 
