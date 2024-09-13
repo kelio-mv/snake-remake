@@ -73,11 +73,11 @@ function setup() {
     remotePlayers.removePlayer(nickname);
   });
 
-  socket.on("immunity_expire", (nickname) => {
+  socket.on("protection_end", (nickname) => {
     if (nickname) {
-      remotePlayers.removePlayerImmunity(nickname);
+      remotePlayers.disablePlayerProtection(nickname);
     } else {
-      localPlayer.removeImmunity();
+      localPlayer.disableProtection();
     }
   });
 
@@ -99,7 +99,7 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// add respawn immunity
+// add spawn protection
 // display players' nicknames
 // display "nickname already in use" warning without the function alert
 // sounds and music

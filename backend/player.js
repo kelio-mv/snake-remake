@@ -15,7 +15,7 @@ class Player {
     this.direction = "up";
     this.deltaLength = 3;
     this.dead = false;
-    this.hasImmunity = true;
+    this.protected = true;
   }
 
   moveHead(deltaTime) {
@@ -107,18 +107,6 @@ class Player {
 
   grow() {
     this.deltaLength += 1;
-  }
-
-  die() {
-    this.dead = true;
-  }
-
-  respawn() {
-    this.reset();
-  }
-
-  removeImmunity() {
-    this.hasImmunity = false;
   }
 
   update(deltaTime) {

@@ -3,10 +3,10 @@ import { FIELD_SIZE, BORDER_WIDTH } from "./constants.js";
 const PLAYER_SPEED = 10;
 
 class Player {
-  constructor(color, hasImmunity = true) {
-    // setting a default value for hasImmunity looks weird
+  constructor(color, _protected = true) {
+    // setting a default value for protected looks weird
     this.color = color;
-    this.hasImmunity = hasImmunity;
+    this.protected = _protected;
     this.reset();
   }
 
@@ -69,11 +69,11 @@ class Player {
 
   respawn() {
     this.reset();
-    this.hasImmunity = true;
+    this.protected = true;
   }
 
-  removeImmunity() {
-    this.hasImmunity = false;
+  disableProtection() {
+    this.protected = false;
   }
 
   update(deltaTime) {
@@ -87,7 +87,7 @@ class Player {
   }
 
   draw(ctx) {
-    if (this.hasImmunity) {
+    if (this.protected) {
       ctx.globalAlpha = 0.5;
     }
 

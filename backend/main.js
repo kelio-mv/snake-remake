@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import Apple from "./apple.js";
 import Player from "./player.js";
-import { SPAWN_IMMUNITY_TIME } from "./constants.js";
+import { SPAWN_PROTECTION_TIME } from "./constants.js";
 
 const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
@@ -34,17 +34,17 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   const { player } = socket;
-  const setImmunityTimeout = () => {
+  const setProtectionTimeout = () => {
     return setTimeout(() => {
-      player.removeImmunity();
-      socket.emit("immunity_expire");
-      socket.broadcast.emit("immunity_expire", socket.nickname);
-    }, 1000 * SPAWN_IMMUNITY_TIME);
+      player.protected = false;
+      socket.emit("protection_end");
+      socket.broadcast.emit("protection_end", socket.nickname);
+    }, 1000 * SPAWN_PROTECTION_TIME);
   };
 
   socket.broadcast.emit("player_connect", socket.nickname);
   socket.emit("apple", apple.getState());
-  socket.immunityTimeout = setImmunityTimeout();
+  socket.protectionTimeout = setProtectionTimeout();
 
   socket.on("update", (state) => {
     // Ignore state updates sent before respawn to prevent multiple deaths from occurring
@@ -58,18 +58,18 @@ io.on("connection", (socket) => {
     for (const oppSocket of socketsExcept(socket)) {
       const opponent = oppSocket.player;
 
-      if (opponent.dead || (player.hasImmunity && opponent.hasImmunity)) {
+      if (opponent.dead || (player.protected && opponent.protected)) {
         continue;
       }
 
       if (player.collidePlayer(opponent)) {
-        if (!player.hasImmunity) {
-          player.die();
+        if (!player.protected) {
+          player.dead = true;
           socket.emit("respawn");
         }
 
-        if (!opponent.hasImmunity && opponent.collidePlayer(player)) {
-          opponent.die();
+        if (!opponent.protected && opponent.collidePlayer(player)) {
+          opponent.dead = true;
           oppSocket.emit("respawn");
         }
 
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
     }
 
     if (player.collideItself() || player.collideEdges()) {
-      player.die();
+      player.dead = true;
       socket.emit("respawn");
       return;
     }
@@ -96,13 +96,13 @@ io.on("connection", (socket) => {
      * I believe this happened because socket.io prioritizes acknowledgment packets over normal events,
      * causing the player to respawn before receiving the last state update that should have been ignored.
      */
-    player.respawn();
+    player.reset();
     socket.broadcast.emit("respawn", socket.nickname);
-    socket.immunityTimeout = setImmunityTimeout();
+    socket.protectionTimeout = setProtectionTimeout();
   });
 
   socket.on("disconnect", () => {
-    clearTimeout(socket.immunityTimeout);
+    clearTimeout(socket.protectionTimeout);
     socket.broadcast.emit("player_disconnect", socket.nickname);
   });
 });

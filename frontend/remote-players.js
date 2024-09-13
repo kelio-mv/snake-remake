@@ -3,8 +3,8 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname, hasImmunity) {
-    super(REMOTE_PLAYER_COLOR, hasImmunity);
+  constructor(nickname, _protected) {
+    super(REMOTE_PLAYER_COLOR, _protected);
     this.nickname = nickname;
   }
 
@@ -33,10 +33,10 @@ class RemotePlayers {
     player.respawn();
   }
 
-  removePlayerImmunity(nickname) {
+  disablePlayerProtection(nickname) {
     // what if player data isn't loaded yet?
     const player = this.players.find((player) => player.nickname === nickname);
-    player.removeImmunity();
+    player.disableProtection();
   }
 
   addPlayer(nickname) {
