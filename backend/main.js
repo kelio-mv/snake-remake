@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import Apple from "./apple.js";
 import Player from "./player.js";
-import { IMMUNITY_TIME } from "./constants.js";
+import { SPAWN_IMMUNITY_TIME } from "./constants.js";
 
 const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
       player.removeImmunity();
       socket.emit("immunity_expire");
       socket.broadcast.emit("immunity_expire", socket.nickname);
-    }, 1000 * IMMUNITY_TIME);
+    }, 1000 * SPAWN_IMMUNITY_TIME);
   };
 
   socket.broadcast.emit("player_connect", socket.nickname);
