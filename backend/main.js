@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import Apple from "./apple.js";
 import Player from "./player.js";
-import { IMMUNITY_TIMEOUT } from "./constants.js";
+import { IMMUNITY_TIME } from "./constants.js";
 
 const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
@@ -34,15 +34,17 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   const { player } = socket;
+  const setImmunityTimeout = () => {
+    return setTimeout(() => {
+      player.removeImmunity();
+      socket.emit("immunity_expire");
+      socket.broadcast.emit("immunity_expire", socket.nickname);
+    }, 1000 * IMMUNITY_TIME);
+  };
 
   socket.broadcast.emit("player_connect", socket.nickname);
   socket.emit("apple", apple.getState());
-
-  setTimeout(() => {
-    player.removeImmunity();
-    socket.emit("immunity_expire");
-    socket.broadcast.emit("immunity_expire", socket.nickname);
-  }, 1000 * IMMUNITY_TIMEOUT);
+  socket.immunityTimeout = setImmunityTimeout();
 
   socket.on("update", (state) => {
     // Ignore state updates sent before respawn to prevent multiple deaths from occurring
@@ -92,15 +94,11 @@ io.on("connection", (socket) => {
      */
     player.respawn();
     socket.broadcast.emit("respawn", socket.nickname);
-
-    setTimeout(() => {
-      player.removeImmunity();
-      socket.emit("immunity_expire");
-      socket.broadcast.emit("immunity_expire", socket.nickname);
-    }, 1000 * IMMUNITY_TIMEOUT);
+    socket.immunityTimeout = setImmunityTimeout();
   });
 
   socket.on("disconnect", () => {
+    clearTimeout(socket.immunityTimeout);
     socket.broadcast.emit("player_disconnect", socket.nickname);
   });
 });
