@@ -99,12 +99,14 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// add spawn protection
 // display players' nicknames
-// display "nickname already in use" warning without the function alert
+// drop players' apples on death
 // sounds and music
+// display "nickname already in use" warning outside the browser 'alert' window
+// improve protected player drawing by changing start and end angles
+// improve socket.io event names
+// maybe unify constants and classes between client and server
 // maybe different colors for players
+// maybe different spawn points
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
-// improve socket.io event names
-// improve immune player drawing by changing start and end angles

@@ -118,8 +118,3 @@ class Player {
 }
 
 export default Player;
-
-// up: 0 and pi
-// down: 0 and pi (clockwise)
-// left: 0.5 pi and 1.5 pi (clockwise)
-// right: 0.5 pi and 1.5 pi
