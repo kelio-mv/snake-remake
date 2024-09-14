@@ -81,10 +81,6 @@ class Player {
   }
 
   draw(ctx) {
-    if (this.protected) {
-      ctx.globalAlpha = 0.5;
-    }
-
     const drawBody = (strokeStyle, lineWidth) => {
       ctx.strokeStyle = strokeStyle;
       ctx.lineWidth = lineWidth;
@@ -100,9 +96,20 @@ class Player {
       ctx.stroke();
     };
 
+    const drawNickname = () => {
+      const head = this.body.at(-1);
+
+      ctx.font = "1px 'Work Sans', system-ui, sans-serif";
+      ctx.fillStyle = "#fff";
+      ctx.textAlign = "center";
+      ctx.fillText(this.nickname, head.x, head.y - 1);
+    };
+
+    ctx.globalAlpha = this.protected ? 0.5 : 1;
     drawBody("#000", 1);
     drawBody(this.color, 1 - 2 * BORDER_WIDTH);
     ctx.globalAlpha = 1;
+    drawNickname();
   }
 
   getState() {

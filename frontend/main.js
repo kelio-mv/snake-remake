@@ -33,7 +33,7 @@ socket.on("connect", () => {
   localStorage.setItem("nickname", homeNicknameInput.value);
   homePage.hidden = true;
   gamePage.hidden = false;
-  startGame();
+  startGame(homeNicknameInput.value);
 });
 
 socket.on("connect_error", (err) => {

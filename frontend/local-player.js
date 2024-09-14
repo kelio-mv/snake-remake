@@ -17,6 +17,7 @@ const NET_FLOAT_PRECISION = 2;
 
 class LocalPlayer extends Player {
   static roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
+  nickname = null;
   touchStart = null;
 
   constructor() {
@@ -24,6 +25,10 @@ class LocalPlayer extends Player {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
+  }
+
+  setNickname(nickname) {
+    this.nickname = nickname;
   }
 
   setDirection(direction) {

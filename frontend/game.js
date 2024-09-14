@@ -38,7 +38,8 @@ function update() {
   state.animationFrame = requestAnimationFrame(update);
 }
 
-function start() {
+function start(nickname) {
+  localPlayer.setNickname(nickname);
   addEventListener("keydown", localPlayer.handleKeyDown);
   addEventListener("touchstart", localPlayer.handleTouchStart);
   addEventListener("touchmove", localPlayer.handleTouchMove);
@@ -99,7 +100,6 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// display players' nicknames
 // drop players' apples on death
 // sounds and music
 // display "nickname already in use" warning outside the browser 'alert' window
