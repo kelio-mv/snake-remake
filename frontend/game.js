@@ -103,7 +103,6 @@ export { start as startGame, stop as stopGame };
 // drop players' apples on death
 // sounds and music
 // display "nickname already in use" warning outside the browser 'alert' window
-// improve protected player drawing by changing start and end angles
 // improve socket.io event names
 // maybe unify constants and classes between client and server
 // maybe different colors for players

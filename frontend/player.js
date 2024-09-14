@@ -85,30 +85,23 @@ class Player {
       ctx.globalAlpha = 0.5;
     }
 
-    const drawBody = (color, lineWidth, radius) => {
-      ctx.fillStyle = color;
-      ctx.strokeStyle = color;
+    const drawBody = (strokeStyle, lineWidth) => {
+      ctx.strokeStyle = strokeStyle;
       ctx.lineWidth = lineWidth;
+      ctx.lineCap = "round";
+      ctx.beginPath();
 
-      this.body.forEach((point, index) => {
+      this.body.slice(0, -1).forEach((point, index) => {
         const nextPoint = this.body[index + 1];
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
-        ctx.fill();
-
-        if (!nextPoint) {
-          return;
-        }
-        ctx.beginPath();
         ctx.moveTo(point.x, point.y);
         ctx.lineTo(nextPoint.x, nextPoint.y);
-        ctx.stroke();
       });
+
+      ctx.stroke();
     };
 
-    drawBody("#000", 1, 0.5);
-    drawBody(this.color, 1 - 2 * BORDER_WIDTH, 0.5 - BORDER_WIDTH);
-
+    drawBody("#000", 1);
+    drawBody(this.color, 1 - 2 * BORDER_WIDTH);
     ctx.globalAlpha = 1;
   }
 
