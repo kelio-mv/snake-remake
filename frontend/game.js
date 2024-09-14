@@ -1,7 +1,7 @@
 import Background from "./background.js";
 import LocalPlayer from "./local-player.js";
 import RemotePlayers from "./remote-players.js";
-import Apple from "./apple.js";
+import Apples from "./apples.js";
 import socket from "./socket.js";
 import { FIELD_SIZE } from "./constants.js";
 
@@ -10,7 +10,7 @@ const ctx = canvas.getContext("2d");
 const background = new Background();
 const localPlayer = new LocalPlayer();
 const remotePlayers = new RemotePlayers();
-const apple = new Apple();
+const apples = new Apples();
 const state = { lastUpdate: null, animationFrame: null };
 
 function resize() {
@@ -32,7 +32,7 @@ function update() {
   background.draw(ctx);
   localPlayer.draw(ctx);
   remotePlayers.draw(ctx);
-  apple.draw(ctx);
+  apples.draw(ctx);
 
   state.lastUpdate = now;
   state.animationFrame = requestAnimationFrame(update);
@@ -55,8 +55,12 @@ function stop() {
 }
 
 function setup() {
-  socket.on("apple", (state, grow) => {
-    apple.setState(...state);
+  socket.on("apples_add", (instances) => {
+    apples.add(instances);
+  });
+
+  socket.on("apples_replace", (appleIndex, newApple, grow) => {
+    apples.replace(appleIndex, newApple);
     if (grow) {
       localPlayer.grow();
     }
@@ -104,8 +108,8 @@ export { start as startGame, stop as stopGame };
 // sounds and music
 // display "nickname already in use" warning outside the browser 'alert' window
 // improve socket.io event names
-// maybe unify constants and classes between client and server
 // maybe different colors for players
 // maybe different spawn points
+// maybe unify constants and classes between client and server
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag

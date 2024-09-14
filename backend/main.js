@@ -1,11 +1,11 @@
 import { Server } from "socket.io";
-import Apple from "./apple.js";
+import Apples from "./apples.js";
 import Player from "./player.js";
 import { SPAWN_PROTECTION_TIME } from "./constants.js";
 
 const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
-const apple = new Apple();
+const apples = new Apples();
 
 function isNicknameInUse(nickname) {
   for (const [id, socket] of io.sockets.sockets) {
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
       !oppSocket.player.protected
     );
   });
-  socket.emit("apple", apple.getState());
+  socket.emit("apples_add", apples.getState());
   socket.broadcast.emit("player_add", socket.nickname);
   socket.protectionTimeout = setProtectionTimeout();
 
@@ -98,10 +98,19 @@ io.on("connection", (socket) => {
       return;
     }
 
-    if (player.collideApple(apple.instance)) {
-      apple.replace();
-      socket.emit("apple", apple.getState(), true);
-      socket.broadcast.emit("apple", apple.getState());
+    for (const [index, apple] of apples.instances.entries()) {
+      if (player.collideApple(apple)) {
+        // maybe make apples.remove return a new apple
+        if (apples.quantity === 1) {
+          const { x, y } = apples.replace();
+          socket.emit("apples_replace", index, [x, y], true);
+          socket.broadcast.emit("apples_replace", index, [x, y]);
+        } else {
+          apples.remove(apple);
+          socket.emit("apples_replace", index, null, true);
+          socket.broadcast.emit("apples_replace", index, null);
+        }
+      }
     }
   });
 
