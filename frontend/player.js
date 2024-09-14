@@ -85,43 +85,29 @@ class Player {
       ctx.globalAlpha = 0.5;
     }
 
-    ctx.fillStyle = "#000";
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 1;
+    const drawBody = (color, lineWidth, radius) => {
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
 
-    this.body.forEach((point, index) => {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 0.5, 0, 2 * Math.PI);
-      ctx.fill();
+      this.body.forEach((point, index) => {
+        const nextPoint = this.body[index + 1];
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+        ctx.fill();
 
-      if (point === this.body.at(-1)) {
-        return;
-      }
-      const nextPoint = this.body[index + 1];
-      ctx.beginPath();
-      ctx.moveTo(point.x, point.y);
-      ctx.lineTo(nextPoint.x, nextPoint.y);
-      ctx.stroke();
-    });
+        if (!nextPoint) {
+          return;
+        }
+        ctx.beginPath();
+        ctx.moveTo(point.x, point.y);
+        ctx.lineTo(nextPoint.x, nextPoint.y);
+        ctx.stroke();
+      });
+    };
 
-    ctx.fillStyle = this.color;
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = 1 - 2 * BORDER_WIDTH;
-
-    this.body.forEach((point, index) => {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 0.5 - BORDER_WIDTH, 0, 2 * Math.PI);
-      ctx.fill();
-
-      if (point === this.body.at(-1)) {
-        return;
-      }
-      const nextPoint = this.body[index + 1];
-      ctx.beginPath();
-      ctx.moveTo(point.x, point.y);
-      ctx.lineTo(nextPoint.x, nextPoint.y);
-      ctx.stroke();
-    });
+    drawBody("#000", 1, 0.5);
+    drawBody(this.color, 1 - 2 * BORDER_WIDTH, 0.5 - BORDER_WIDTH);
 
     ctx.globalAlpha = 1;
   }
@@ -132,3 +118,8 @@ class Player {
 }
 
 export default Player;
+
+// up: 0 and pi
+// down: 0 and pi (clockwise)
+// left: 0.5 pi and 1.5 pi (clockwise)
+// right: 0.5 pi and 1.5 pi
