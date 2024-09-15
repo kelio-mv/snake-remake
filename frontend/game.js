@@ -59,8 +59,8 @@ function setup() {
     apples.add(instances);
   });
 
-  socket.on("apples_replace", (appleIndex, newApple, grow) => {
-    apples.replace(appleIndex, newApple);
+  socket.on("apples_remove", (appleIndex, subApple, grow) => {
+    apples.remove(appleIndex, subApple);
     if (grow) {
       localPlayer.grow();
     }

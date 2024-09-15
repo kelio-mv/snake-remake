@@ -98,18 +98,12 @@ io.on("connection", (socket) => {
       return;
     }
 
-    for (const [index, apple] of apples.instances.entries()) {
+    for (const [index, apple] of apples.get()) {
       if (player.collideApple(apple)) {
-        // maybe make apples.remove return a new apple
-        if (apples.quantity === 1) {
-          const { x, y } = apples.replace();
-          socket.emit("apples_replace", index, [x, y], true);
-          socket.broadcast.emit("apples_replace", index, [x, y]);
-        } else {
-          apples.remove(apple);
-          socket.emit("apples_replace", index, null, true);
-          socket.broadcast.emit("apples_replace", index, null);
-        }
+        // A substitute apple is returned when the last apple is removed
+        const subApple = apples.remove(index);
+        socket.emit("apples_remove", index, subApple, true);
+        socket.broadcast.emit("apples_remove", index, subApple);
       }
     }
   });

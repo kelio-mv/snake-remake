@@ -11,8 +11,8 @@ class Apples {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  get quantity() {
-    return this.instances.length;
+  get() {
+    return this.instances.entries();
   }
 
   generate() {
@@ -20,13 +20,14 @@ class Apples {
     return this.instances.some((a) => a.x === x && a.y === y) ? this.generate() : { x, y };
   }
 
-  replace() {
-    this.instances = [this.generate()];
-    return this.instances[0];
-  }
+  remove(index) {
+    if (this.instances.length === 1) {
+      const subApple = this.generate();
+      this.instances[0] = subApple;
+      return [subApple.x, subApple.y];
+    }
 
-  remove(apple) {
-    this.instances = this.instances.filter((a) => a !== apple);
+    this.instances.splice(index, 1);
   }
 
   getState() {

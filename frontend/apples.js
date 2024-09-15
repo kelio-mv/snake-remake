@@ -10,9 +10,9 @@ class Apples {
     this.instances.push(...instances.map(([x, y]) => ({ x, y })));
   }
 
-  replace(appleIndex, newApple) {
-    if (newApple) {
-      const [x, y] = newApple;
+  remove(appleIndex, subApple) {
+    if (subApple) {
+      const [x, y] = subApple;
       this.instances[appleIndex] = { x, y };
     } else {
       this.instances.splice(appleIndex, 1);
