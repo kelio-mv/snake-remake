@@ -34,7 +34,7 @@ class Player {
 
   moveTail(deltaTime) {
     const [tail, target] = this.body;
-    const targetDist = Math.abs(target.x - tail.x) + Math.abs(target.y - tail.y);
+    const targetDist = Math.abs(target.x - tail.x) || Math.abs(target.y - tail.y);
     const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
     const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
     const [deltaX, deltaY] = [

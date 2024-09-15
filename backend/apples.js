@@ -20,6 +20,10 @@ class Apples {
     return this.instances.some((a) => a.x === x && a.y === y) ? this.generate() : { x, y };
   }
 
+  add(playerApples) {
+    this.instances.push(...playerApples.map(([x, y]) => ({ x, y })));
+  }
+
   remove(index) {
     if (this.instances.length === 1) {
       const subApple = this.generate();

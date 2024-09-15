@@ -72,12 +72,13 @@ io.on("connection", (socket) => {
 
       if (player.collidePlayer(opponent)) {
         if (!player.protected) {
-          player.dead = true;
+          player.die();
           socket.emit("respawn");
         }
 
+        // maybe this should be outside the parent block
         if (!opponent.protected && opponent.collidePlayer(player)) {
-          opponent.dead = true;
+          opponent.die();
           oppSocket.emit("respawn");
         }
 
@@ -86,14 +87,20 @@ io.on("connection", (socket) => {
     }
 
     if (!player.protected && player.collideItself()) {
-      player.dead = true;
+      player.die();
       socket.emit("respawn");
       return;
     }
 
     if (player.collideEdges()) {
-      player.dead = true;
+      const playerApples = player.die();
       socket.emit("respawn");
+
+      if (playerApples) {
+        apples.add(playerApples);
+        socket.emit("apples_add", playerApples);
+      }
+
       clearTimeout(socket.protectionTimeout);
       return;
     }
@@ -130,3 +137,4 @@ console.log("Server is running on port", port);
 // Fix CORS origin
 // We may need to warn players about their opponents' deaths
 // Maybe we should broadcast player state after collision checks to reduce lag
+// maybe broadcast playerApples in respawn event
