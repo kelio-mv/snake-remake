@@ -19,6 +19,18 @@ function socketsExcept(socket) {
   return Array.from(io.sockets.sockets.values()).filter((s) => s !== socket);
 }
 
+function killPlayer(socket) {
+  // should die return apples? maybe broadcast playerApples in respawn event
+  const playerApples = socket.player.die();
+  socket.emit("respawn");
+
+  if (playerApples) {
+    apples.add(playerApples);
+    socket.emit("apples_add", playerApples);
+    socket.broadcast.emit("apples_add", playerApples);
+  }
+}
+
 io.use((socket, next) => {
   const { nickname } = socket.handshake.auth;
 
@@ -34,32 +46,30 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   const { player } = socket;
-  const setProtectionTimeout = () => {
-    return setTimeout(() => {
-      player.protected = false;
-      socket.emit("protection_end");
-      socket.broadcast.emit("protection_end", socket.nickname);
-    }, 1000 * SPAWN_PROTECTION_TIME);
-  };
 
-  socketsExcept(socket).forEach((oppSocket) => {
-    socket.emit(
-      "player_add",
-      oppSocket.nickname,
-      oppSocket.player.getState(),
-      !oppSocket.player.protected
-    );
-  });
-  socket.emit("apples_add", apples.getState());
-  socket.broadcast.emit("player_add", socket.nickname);
-  socket.protectionTimeout = setProtectionTimeout();
+  handleConnection();
+  socket.on("update", handleUpdate);
+  socket.on("respawn", handleRespawn);
+  socket.on("disconnect", handleDisconnect);
 
-  socket.on("update", (state) => {
-    // Ignore state updates sent before respawn to prevent multiple deaths from occurring
+  function handleConnection() {
+    socketsExcept(socket).forEach((oppSocket) => {
+      socket.emit(
+        "player_add",
+        oppSocket.nickname,
+        oppSocket.player.getState(),
+        !oppSocket.player.protected
+      );
+    });
+    socket.emit("apples_add", apples.getState());
+    socket.broadcast.emit("player_add", socket.nickname);
+    socket.protectionTimeout = setProtectionTimeout();
+  }
+
+  function handleUpdate(state) {
     if (player.dead) {
       return;
     }
-
     player.setState(state);
     socket.broadcast.emit("player", socket.nickname, state);
 
@@ -69,38 +79,25 @@ io.on("connection", (socket) => {
       if (opponent.dead || (player.protected && opponent.protected)) {
         continue;
       }
-
       if (player.collidePlayer(opponent)) {
         if (!player.protected) {
-          player.die();
-          socket.emit("respawn");
+          killPlayer(socket);
         }
-
         // maybe this should be outside the parent block
         if (!opponent.protected && opponent.collidePlayer(player)) {
-          opponent.die();
-          oppSocket.emit("respawn");
+          killPlayer(oppSocket);
         }
-
         return;
       }
     }
 
     if (!player.protected && player.collideItself()) {
-      player.die();
-      socket.emit("respawn");
+      killPlayer(socket);
       return;
     }
 
     if (player.collideEdges()) {
-      const playerApples = player.die();
-      socket.emit("respawn");
-
-      if (playerApples) {
-        apples.add(playerApples);
-        socket.emit("apples_add", playerApples);
-      }
-
+      killPlayer(socket);
       clearTimeout(socket.protectionTimeout);
       return;
     }
@@ -113,23 +110,26 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("apples_remove", index, subApple);
       }
     }
-  });
+  }
 
-  socket.on("respawn", () => {
-    /**
-     * When I used the acknowledgement in the 'respawn' request, the player sometimes respawned twice.
-     * I believe this happened because socket.io prioritizes acknowledgment packets over normal events,
-     * causing the player to respawn before receiving the last state update that should have been ignored.
-     */
+  function handleRespawn() {
     player.reset();
     socket.broadcast.emit("respawn", socket.nickname);
     socket.protectionTimeout = setProtectionTimeout();
-  });
+  }
 
-  socket.on("disconnect", () => {
+  function handleDisconnect() {
     socket.broadcast.emit("player_disconnect", socket.nickname);
     clearTimeout(socket.protectionTimeout);
-  });
+  }
+
+  function setProtectionTimeout() {
+    return setTimeout(() => {
+      player.protected = false;
+      socket.emit("protection_end");
+      socket.broadcast.emit("protection_end", socket.nickname);
+    }, 1000 * SPAWN_PROTECTION_TIME);
+  }
 });
 
 console.log("Server is running on port", port);
@@ -137,4 +137,3 @@ console.log("Server is running on port", port);
 // Fix CORS origin
 // We may need to warn players about their opponents' deaths
 // Maybe we should broadcast player state after collision checks to reduce lag
-// maybe broadcast playerApples in respawn event
