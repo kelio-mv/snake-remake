@@ -99,7 +99,13 @@ function setup() {
   });
 
   addEventListener("resize", resize);
-
+  addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      // Prevent player from teleporting to avoid unfair collisions for their opponents
+      // This also fixes the bug where the player drops their apples outside the field
+      state.lastUpdate = Date.now() / 1000;
+    }
+  });
   resize();
 }
 
@@ -107,7 +113,7 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// drop players' apples on death
+// try putting players' apples on grid
 // sounds and music
 // display "nickname already in use" warning outside the browser 'alert' window
 // improve socket.io event names
