@@ -19,6 +19,10 @@ class Apples {
     }
   }
 
+  removeAll() {
+    this.instances = [];
+  }
+
   draw(ctx) {
     this.instances.forEach((apple) => {
       ctx.beginPath();

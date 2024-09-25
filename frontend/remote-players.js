@@ -24,28 +24,32 @@ class RemotePlayer extends Player {
 class RemotePlayers {
   players = [];
 
-  addPlayer(nickname, state, unprotected) {
+  add(nickname, state, unprotected) {
     this.players.push(new RemotePlayer(nickname, state, unprotected));
   }
 
-  removePlayer(nickname) {
+  remove(nickname) {
     this.players = this.players.filter((player) => player.nickname !== nickname);
   }
 
-  getPlayer(nickname) {
+  removeAll() {
+    this.players = [];
+  }
+
+  get(nickname) {
     return this.players.find((player) => player.nickname === nickname);
   }
 
-  setPlayerState(nickname, state) {
-    this.getPlayer(nickname).setState(state);
+  setState(nickname, state) {
+    this.get(nickname).setState(state);
   }
 
-  resetPlayer(nickname) {
-    this.getPlayer(nickname).reset();
+  reset(nickname) {
+    this.get(nickname).reset();
   }
 
-  disablePlayerProtection(nickname) {
-    this.getPlayer(nickname).disableProtection();
+  disableProtection(nickname) {
+    this.get(nickname).disableProtection();
   }
 
   draw(ctx) {

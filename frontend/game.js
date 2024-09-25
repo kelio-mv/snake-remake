@@ -48,10 +48,13 @@ function start(nickname) {
 }
 
 function stop() {
+  cancelAnimationFrame(state.animationFrame);
   removeEventListener("keydown", localPlayer.handleKeyDown);
   removeEventListener("touchstart", localPlayer.handleTouchStart);
   removeEventListener("touchmove", localPlayer.handleTouchMove);
-  cancelAnimationFrame(state.animationFrame);
+  localPlayer.reset();
+  remotePlayers.removeAll();
+  apples.removeAll();
 }
 
 function setup() {
@@ -67,20 +70,20 @@ function setup() {
   });
 
   socket.on("player", (nickname, state) => {
-    remotePlayers.setPlayerState(nickname, state);
+    remotePlayers.setState(nickname, state);
   });
 
   socket.on("player_add", (nickname, state, unprotected) => {
-    remotePlayers.addPlayer(nickname, state, unprotected);
+    remotePlayers.add(nickname, state, unprotected);
   });
 
   socket.on("player_disconnect", (nickname) => {
-    remotePlayers.removePlayer(nickname);
+    remotePlayers.remove(nickname);
   });
 
   socket.on("protection_end", (nickname) => {
     if (nickname) {
-      remotePlayers.disablePlayerProtection(nickname);
+      remotePlayers.disableProtection(nickname);
     } else {
       localPlayer.disableProtection();
     }
@@ -88,7 +91,7 @@ function setup() {
 
   socket.on("respawn", (nickname) => {
     if (nickname) {
-      remotePlayers.resetPlayer(nickname);
+      remotePlayers.reset(nickname);
     } else {
       localPlayer.reset();
       socket.emit("respawn");
