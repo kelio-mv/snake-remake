@@ -3,6 +3,7 @@ import LocalPlayer from "./local-player.js";
 import RemotePlayers from "./remote-players.js";
 import Apples from "./apples.js";
 import socket from "./socket.js";
+import sounds from "./sounds.js";
 import { FIELD_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".game-canvas");
@@ -66,6 +67,9 @@ function setup() {
     apples.remove(appleIndex, subApple);
     if (grow) {
       localPlayer.grow();
+      sounds.localPlayerEat.play();
+    } else {
+      sounds.remotePlayerEat.play();
     }
   });
 
@@ -92,13 +96,14 @@ function setup() {
   socket.on("respawn", (nickname) => {
     if (nickname) {
       remotePlayers.reset(nickname);
+      sounds.remotePlayerCollide.play();
     } else {
       localPlayer.reset();
       socket.emit("respawn");
+      sounds.localPlayerCollide.play();
     }
   });
 
-  addEventListener("resize", resize);
   addEventListener("visibilitychange", () => {
     if (!document.hidden) {
       // Prevent player from teleporting to avoid unfair collisions for their opponents
@@ -106,6 +111,7 @@ function setup() {
       state.lastUpdate = Date.now() / 1000;
     }
   });
+  addEventListener("resize", resize);
   resize();
 }
 
@@ -113,8 +119,7 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// try putting players' apples on grid
-// sounds and music
+// should i add music?
 // display "nickname already in use" warning outside the browser 'alert' window
 // improve socket.io event names
 // maybe different colors for players
@@ -122,3 +127,4 @@ export { start as startGame, stop as stopGame };
 // maybe unify constants and classes between client and server
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
+// review all the code

@@ -9,6 +9,10 @@ const homeJoinButton = document.querySelector(".home-join-button");
 const homeJoinLabel = document.querySelector(".home-join-label");
 const homeJoinLoader = document.querySelector(".home-join-loader");
 const gamePage = document.querySelector(".game-page");
+const sounds = {
+  buttonClick: new Audio("sounds/button-click.ogg"),
+  connectionError: new Audio("sounds/connection-error.ogg"),
+};
 
 homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
 homePage.style.setProperty("--bg-dark-color", BG_DARK_COLOR);
@@ -27,6 +31,7 @@ homeForm.addEventListener("submit", (e) => {
   homeJoinLabel.hidden = true;
   homeJoinLoader.hidden = false;
   socket.connect();
+  sounds.buttonClick.play();
 });
 
 socket.on("connect", () => {
@@ -38,11 +43,12 @@ socket.on("connect", () => {
 
 socket.on("connect_error", (err) => {
   if (err.message === "login error") {
-    alert("Este nome de usuário já está em uso.");
     homeNicknameInput.disabled = false;
     homeJoinButton.disabled = false;
     homeJoinLabel.hidden = false;
     homeJoinLoader.hidden = true;
+    sounds.connectionError.play();
+    alert("Este nome de usuário já está em uso.");
   }
 });
 
@@ -50,6 +56,7 @@ socket.on("disconnect", () => {
   stopGame();
   homePage.hidden = false;
   gamePage.hidden = true;
+  sounds.connectionError.play();
 });
 
 export default homeNicknameInput;

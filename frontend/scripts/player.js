@@ -7,6 +7,7 @@ class Player {
   }
 
   reset() {
+    // should direction and deltaLength get moved to localPlayer?
     this.body = [
       { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
       { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
