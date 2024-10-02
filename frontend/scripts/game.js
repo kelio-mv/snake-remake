@@ -67,10 +67,8 @@ function setup() {
     apples.remove(appleIndex, subApple);
     if (grow) {
       localPlayer.grow();
-      sounds.localPlayerEat.play();
-    } else {
-      sounds.remotePlayerEat.play();
     }
+    sounds.playerEat.play();
   });
 
   socket.on("player", (nickname, state) => {
@@ -96,12 +94,11 @@ function setup() {
   socket.on("respawn", (nickname) => {
     if (nickname) {
       remotePlayers.reset(nickname);
-      sounds.remotePlayerCollide.play();
     } else {
       localPlayer.reset();
       socket.emit("respawn");
-      sounds.localPlayerCollide.play();
     }
+    sounds.playerCollide.play();
   });
 
   addEventListener("visibilitychange", () => {
@@ -119,7 +116,7 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// should i add music?
+// fix incorrect number of player apples
 // display "nickname already in use" warning outside the browser 'alert' window
 // improve socket.io event names
 // maybe different colors for players

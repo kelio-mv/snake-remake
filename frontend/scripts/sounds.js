@@ -10,10 +10,8 @@ class Sound extends Audio {
 }
 
 const sounds = {
-  localPlayerEat: new Sound("sounds/local-player-eat.ogg"),
-  localPlayerCollide: new Sound("sounds/local-player-collide.ogg"),
-  remotePlayerEat: new Sound("sounds/remote-player-eat.ogg"),
-  remotePlayerCollide: new Sound("sounds/remote-player-collide.ogg"),
+  playerEat: new Sound("sounds/player-eat.ogg"),
+  playerCollide: new Sound("sounds/player-collide.ogg"),
 };
 
 export default sounds;
