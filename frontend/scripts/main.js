@@ -10,11 +10,9 @@ const homeJoinLabel = document.querySelector(".home-join-label");
 const homeJoinLoader = document.querySelector(".home-join-loader");
 const gamePage = document.querySelector(".game-page");
 const sounds = {
-  inputEnter: new Audio("sounds/input-enter.ogg"),
   buttonClick: new Audio("sounds/button-click.ogg"),
   connectionError: new Audio("sounds/connection-error.ogg"),
 };
-let formSubmittedWithEnter = false;
 
 homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
 homePage.style.setProperty("--bg-dark-color", BG_DARK_COLOR);
@@ -26,12 +24,6 @@ homeNicknameInput.addEventListener("input", () => {
   homeNicknameInput.value = homeNicknameInput.value.replace(/[^a-zA-Z0-9_]/g, "");
 });
 
-homeNicknameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    formSubmittedWithEnter = true;
-  }
-});
-
 homeForm.addEventListener("submit", (e) => {
   e.preventDefault();
   homeNicknameInput.disabled = true;
@@ -39,8 +31,7 @@ homeForm.addEventListener("submit", (e) => {
   homeJoinLabel.hidden = true;
   homeJoinLoader.hidden = false;
   socket.connect();
-  sounds[formSubmittedWithEnter ? "inputEnter" : "buttonClick"].play();
-  formSubmittedWithEnter = false;
+  sounds.buttonClick.play();
 });
 
 socket.on("connect", () => {
