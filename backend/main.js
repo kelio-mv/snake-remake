@@ -22,7 +22,7 @@ function socketsExcept(socket) {
 function killPlayer(socket) {
   // should die return apples? maybe broadcast playerApples in respawn event
   const playerApples = socket.player.die();
-  socket.emit("respawn");
+  socket.emit("player_respawn");
 
   if (playerApples) {
     apples.add(playerApples);
@@ -114,20 +114,20 @@ io.on("connection", (socket) => {
 
   function handleRespawn() {
     player.reset();
-    socket.broadcast.emit("respawn", socket.nickname);
+    socket.broadcast.emit("player_respawn", socket.nickname);
     socket.protectionTimeout = setProtectionTimeout();
   }
 
   function handleDisconnect() {
-    socket.broadcast.emit("player_disconnect", socket.nickname);
+    socket.broadcast.emit("player_remove", socket.nickname);
     clearTimeout(socket.protectionTimeout);
   }
 
   function setProtectionTimeout() {
     return setTimeout(() => {
       player.protected = false;
-      socket.emit("protection_end");
-      socket.broadcast.emit("protection_end", socket.nickname);
+      socket.emit("player_protection_end");
+      socket.broadcast.emit("player_protection_end", socket.nickname);
     }, 1000 * SPAWN_PROTECTION_TIME);
   }
 });

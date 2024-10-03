@@ -59,6 +59,36 @@ function stop() {
 }
 
 function setup() {
+  socket.on("player", (nickname, state) => {
+    remotePlayers.setState(nickname, state);
+  });
+
+  socket.on("player_add", (nickname, state, unprotected) => {
+    remotePlayers.add(nickname, state, unprotected);
+  });
+
+  socket.on("player_remove", (nickname) => {
+    remotePlayers.remove(nickname);
+  });
+
+  socket.on("player_protection_end", (nickname) => {
+    if (nickname) {
+      remotePlayers.disableProtection(nickname);
+    } else {
+      localPlayer.disableProtection();
+    }
+  });
+
+  socket.on("player_respawn", (nickname) => {
+    if (nickname) {
+      remotePlayers.reset(nickname);
+    } else {
+      localPlayer.reset();
+      socket.emit("respawn");
+    }
+    sounds.playerCollide.play();
+  });
+
   socket.on("apples_add", (instances) => {
     apples.add(instances);
   });
@@ -69,36 +99,6 @@ function setup() {
       localPlayer.grow();
     }
     sounds.playerEat.play();
-  });
-
-  socket.on("player", (nickname, state) => {
-    remotePlayers.setState(nickname, state);
-  });
-
-  socket.on("player_add", (nickname, state, unprotected) => {
-    remotePlayers.add(nickname, state, unprotected);
-  });
-
-  socket.on("player_disconnect", (nickname) => {
-    remotePlayers.remove(nickname);
-  });
-
-  socket.on("protection_end", (nickname) => {
-    if (nickname) {
-      remotePlayers.disableProtection(nickname);
-    } else {
-      localPlayer.disableProtection();
-    }
-  });
-
-  socket.on("respawn", (nickname) => {
-    if (nickname) {
-      remotePlayers.reset(nickname);
-    } else {
-      localPlayer.reset();
-      socket.emit("respawn");
-    }
-    sounds.playerCollide.play();
   });
 
   addEventListener("visibilitychange", () => {
@@ -118,7 +118,6 @@ export { start as startGame, stop as stopGame };
 
 // fix incorrect number of player apples
 // display "nickname already in use" warning outside the browser 'alert' window
-// improve socket.io event names
 // maybe different colors for players
 // maybe different spawn points
 // maybe unify constants and classes between client and server
