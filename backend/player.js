@@ -14,9 +14,10 @@ class Player {
     ];
     this.direction = "up";
     this.deltaLength = 3;
-    this.dead = false;
     this.protected = true;
-    this.apples = null;
+    this.dead = false;
+    this.appleCount = 0;
+    this.apples = [];
   }
 
   getRects() {
@@ -62,7 +63,12 @@ class Player {
     return this.collideRect({ x: apple.x, y: apple.y, width: 1, height: 1 });
   }
 
+  incrementAppleCount() {
+    this.appleCount += 1;
+  }
+
   getLength() {
+    // Do we still need this?
     return this.body.slice(0, -1).reduce((length, point, index) => {
       const nextPoint = this.body[index + 1];
       const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
@@ -91,17 +97,11 @@ class Player {
 
   die() {
     this.dead = true;
-    const length = Math.ceil(this.getLength());
 
-    if (length > 3) {
-      const numberOfApples = length - 3;
-      this.apples = [];
-
-      for (let n = 0; n < numberOfApples; n++) {
-        const tail = this.body[0];
-        this.apples.push([tail.x, tail.y]);
-        this.moveTail(1 / PLAYER_SPEED);
-      }
+    for (let i = 0; i < this.appleCount; i++) {
+      const tail = this.body[0];
+      this.apples.push([tail.x, tail.y]);
+      this.moveTail(1 / PLAYER_SPEED);
     }
   }
 

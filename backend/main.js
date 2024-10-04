@@ -24,7 +24,7 @@ function killPlayer(socket) {
   player.die();
   socket.emit("player_respawn");
 
-  if (player.apples) {
+  if (player.appleCount > 0) {
     apples.add(player.apples);
     socket.emit("apples_add", player.apples);
     socket.broadcast.emit("apples_add", player.apples);
@@ -109,6 +109,7 @@ io.on("connection", (socket) => {
       if (player.collideApple(apple)) {
         // A substitute apple is returned when the last apple is removed
         const subApple = apples.remove(index);
+        player.incrementAppleCount();
         socket.emit("apples_remove", index, subApple, true);
         socket.broadcast.emit("apples_remove", index, subApple);
       }

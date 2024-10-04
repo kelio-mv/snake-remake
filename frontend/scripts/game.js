@@ -116,7 +116,6 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// fix incorrect number of player apples
 // display "nickname already in use" warning outside the browser 'alert' window
 // maybe different colors for players
 // maybe different spawn points
