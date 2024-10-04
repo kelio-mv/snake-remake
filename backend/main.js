@@ -76,19 +76,22 @@ io.on("connection", (socket) => {
     for (const oppSocket of socketsExcept(socket)) {
       const opponent = oppSocket.player;
 
-      if (opponent.dead || (player.protected && opponent.protected)) {
+      if (opponent.dead) {
         continue;
       }
-      if (player.collidePlayer(opponent)) {
-        if (!player.protected) {
-          killPlayer(socket);
-        }
-        // fix this
-        if (!opponent.protected && opponent.collidePlayer(player)) {
-          killPlayer(oppSocket);
-        }
-        return;
+      if (!player.dead && !player.protected && player.collidePlayer(opponent)) {
+        killPlayer(socket);
+        // Don't stop the loop because another opponent may be colliding the player at the same time
+        // This algorithm can change if it executes on a server update instead of a player update
       }
+      if (!opponent.protected && opponent.collidePlayer(player)) {
+        killPlayer(oppSocket);
+      }
+    }
+
+    if (player.dead) {
+      // If the player collided an opponent
+      return;
     }
 
     if (!player.protected && player.collideItself()) {
