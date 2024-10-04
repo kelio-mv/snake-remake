@@ -16,6 +16,7 @@ class Player {
     this.deltaLength = 3;
     this.dead = false;
     this.protected = true;
+    this.apples = null;
   }
 
   getRects() {
@@ -94,15 +95,13 @@ class Player {
 
     if (length > 3) {
       const numberOfApples = length - 3;
-      const apples = [];
+      this.apples = [];
 
       for (let n = 0; n < numberOfApples; n++) {
         const tail = this.body[0];
-        apples.push([tail.x, tail.y]);
+        this.apples.push([tail.x, tail.y]);
         this.moveTail(1 / PLAYER_SPEED);
       }
-
-      return apples;
     }
   }
 

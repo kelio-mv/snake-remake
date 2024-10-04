@@ -20,14 +20,14 @@ function socketsExcept(socket) {
 }
 
 function killPlayer(socket) {
-  // should die return apples? maybe broadcast playerApples in respawn event
-  const playerApples = socket.player.die();
+  const { player } = socket;
+  player.die();
   socket.emit("player_respawn");
 
-  if (playerApples) {
-    apples.add(playerApples);
-    socket.emit("apples_add", playerApples);
-    socket.broadcast.emit("apples_add", playerApples);
+  if (player.apples) {
+    apples.add(player.apples);
+    socket.emit("apples_add", player.apples);
+    socket.broadcast.emit("apples_add", player.apples);
   }
 }
 
@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
         if (!player.protected) {
           killPlayer(socket);
         }
-        // maybe this should be outside the parent block
+        // fix this
         if (!opponent.protected && opponent.collidePlayer(player)) {
           killPlayer(oppSocket);
         }
@@ -136,4 +136,5 @@ console.log("Server is running on port", port);
 
 // Fix CORS origin
 // We may need to warn players about their opponents' deaths
+// Maybe broadcast player apples on death, inside the same event
 // Maybe we should broadcast player state after collision checks to reduce lag
