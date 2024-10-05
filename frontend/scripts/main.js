@@ -22,6 +22,7 @@ homeNicknameInput.value = localStorage.getItem("nickname");
 
 homeNicknameInput.addEventListener("input", () => {
   homeNicknameInput.value = homeNicknameInput.value.replace(/[^a-zA-Z0-9_]/g, "");
+  homeNicknameInput.setCustomValidity("");
 });
 
 homeForm.addEventListener("submit", (e) => {
@@ -44,11 +45,12 @@ socket.on("connect", () => {
 socket.on("connect_error", (err) => {
   if (err.message === "login error") {
     homeNicknameInput.disabled = false;
+    homeNicknameInput.setCustomValidity("Este nome de usuário já está em uso.");
+    homeNicknameInput.reportValidity();
     homeJoinButton.disabled = false;
     homeJoinLabel.hidden = false;
     homeJoinLoader.hidden = true;
     sounds.connectionError.play();
-    alert("Este nome de usuário já está em uso.");
   }
 });
 

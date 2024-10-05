@@ -116,10 +116,9 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// display "nickname already in use" warning outside the browser 'alert' window
-// maybe different colors for players
-// maybe different spawn points
-// maybe unify constants and classes between client and server
+// try different colors for players
+// try different spawn points
+// unify constants and classes between client and server
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
 // review all the code
