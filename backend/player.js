@@ -3,7 +3,8 @@ import { FIELD_SIZE } from "./constants.js";
 const PLAYER_SPEED = 10;
 
 class Player {
-  constructor() {
+  constructor(socket) {
+    this.socket = socket;
     this.reset();
   }
 

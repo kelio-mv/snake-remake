@@ -7,27 +7,27 @@ const port = 3000;
 const io = new Server(port, { cors: { origin: "*" } });
 const apples = new Apples();
 
+function getSockets() {
+  return Array.from(io.sockets.sockets.values());
+}
+
+function getOpponents(player) {
+  const players = getSockets().map((s) => s.player);
+  return players.filter((p) => p !== player);
+}
+
 function isNicknameInUse(nickname) {
-  for (const [id, socket] of io.sockets.sockets) {
-    if (socket.nickname === nickname) {
-      return true;
-    }
-  }
+  return getSockets().some((s) => s.nickname === nickname);
 }
 
-function socketsExcept(socket) {
-  return Array.from(io.sockets.sockets.values()).filter((s) => s !== socket);
-}
-
-function killPlayer(socket) {
-  const { player } = socket;
+function killPlayer(player) {
   player.die();
-  socket.emit("player_respawn");
+  player.socket.emit("player_respawn");
 
   if (player.appleCount > 0) {
     apples.add(player.apples);
-    socket.emit("apples_add", player.apples);
-    socket.broadcast.emit("apples_add", player.apples);
+    player.socket.emit("apples_add", player.apples);
+    player.socket.broadcast.emit("apples_add", player.apples);
   }
 }
 
@@ -40,7 +40,7 @@ io.use((socket, next) => {
   }
 
   socket.nickname = nickname;
-  socket.player = new Player();
+  socket.player = new Player(socket);
   next();
 });
 
@@ -53,13 +53,8 @@ io.on("connection", (socket) => {
   socket.on("disconnect", handleDisconnect);
 
   function handleConnection() {
-    socketsExcept(socket).forEach((oppSocket) => {
-      socket.emit(
-        "player_add",
-        oppSocket.nickname,
-        oppSocket.player.getState(),
-        !oppSocket.player.protected
-      );
+    getOpponents(player).forEach((opponent) => {
+      socket.emit("player_add", opponent.socket.nickname, opponent.getState(), !opponent.protected);
     });
     socket.emit("apples_add", apples.getState());
     socket.broadcast.emit("player_add", socket.nickname);
@@ -73,29 +68,28 @@ io.on("connection", (socket) => {
     player.setState(state);
     socket.broadcast.emit("player", socket.nickname, state);
 
-    for (const s of socketsExcept(socket)) {
-      const opponent = s.player;
+    for (const opponent of getOpponents(player)) {
       if (!opponent.dead && !opponent.protected && opponent.collidePlayer(player)) {
-        killPlayer(s);
+        killPlayer(opponent);
       }
     }
 
     if (!player.protected) {
-      for (const { player: opponent } of socketsExcept(socket)) {
+      for (const opponent of getOpponents(player)) {
         if (player.collidePlayer(opponent)) {
-          killPlayer(socket);
+          killPlayer(player);
           return;
         }
       }
 
       if (player.collideItself()) {
-        killPlayer(socket);
+        killPlayer(player);
         return;
       }
     }
 
     if (player.collideEdges()) {
-      killPlayer(socket);
+      killPlayer(player);
       clearTimeout(socket.protectionTimeout);
       return;
     }
