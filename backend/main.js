@@ -11,13 +11,16 @@ function getSockets() {
   return Array.from(io.sockets.sockets.values());
 }
 
+function getPlayers() {
+  return getSockets().map((s) => s.player);
+}
+
 function getOpponents(player) {
-  const players = getSockets().map((s) => s.player);
-  return players.filter((p) => p !== player);
+  return getPlayers().filter((p) => p !== player);
 }
 
 function isNicknameInUse(nickname) {
-  return getSockets().some((s) => s.nickname === nickname);
+  return getPlayers().some((p) => p.nickname === nickname);
 }
 
 function killPlayer(player) {
@@ -39,8 +42,7 @@ io.use((socket, next) => {
     return;
   }
 
-  socket.nickname = nickname;
-  socket.player = new Player(socket);
+  socket.player = new Player(socket, nickname);
   next();
 });
 
@@ -54,10 +56,10 @@ io.on("connection", (socket) => {
 
   function handleConnection() {
     getOpponents(player).forEach((opponent) => {
-      socket.emit("player_add", opponent.socket.nickname, opponent.getState(), !opponent.protected);
+      socket.emit("player_add", opponent.nickname, opponent.getState(), !opponent.protected);
     });
     socket.emit("apples_add", apples.getState());
-    socket.broadcast.emit("player_add", socket.nickname);
+    socket.broadcast.emit("player_add", player.nickname);
     socket.protectionTimeout = setProtectionTimeout();
   }
 
@@ -66,7 +68,7 @@ io.on("connection", (socket) => {
       return;
     }
     player.setState(state);
-    socket.broadcast.emit("player", socket.nickname, state);
+    socket.broadcast.emit("player", player.nickname, state);
 
     for (const opponent of getOpponents(player)) {
       if (!opponent.dead && !opponent.protected && opponent.collidePlayer(player)) {
@@ -107,12 +109,12 @@ io.on("connection", (socket) => {
 
   function handleRespawn() {
     player.reset();
-    socket.broadcast.emit("player_respawn", socket.nickname);
+    socket.broadcast.emit("player_respawn", player.nickname);
     socket.protectionTimeout = setProtectionTimeout();
   }
 
   function handleDisconnect() {
-    socket.broadcast.emit("player_remove", socket.nickname);
+    socket.broadcast.emit("player_remove", player.nickname);
     clearTimeout(socket.protectionTimeout);
   }
 
@@ -120,7 +122,7 @@ io.on("connection", (socket) => {
     return setTimeout(() => {
       player.protected = false;
       socket.emit("player_protection_end");
-      socket.broadcast.emit("player_protection_end", socket.nickname);
+      socket.broadcast.emit("player_protection_end", player.nickname);
     }, 1000 * SPAWN_PROTECTION_TIME);
   }
 });
