@@ -116,8 +116,11 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
+// improve controls for mobile
+// wait for interaction before respawn
 // try different colors for players
 // try different spawn points
+// credits and tutorial
 // unify constants and classes between client and server
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag

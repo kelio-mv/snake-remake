@@ -17,7 +17,6 @@ const PLAYER_SPEED = 10;
 const NET_FLOAT_PRECISION = 2;
 
 class LocalPlayer extends Player {
-  static roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
   nickname = null;
   touchStart = null;
 
@@ -139,7 +138,7 @@ class LocalPlayer extends Player {
   }
 
   getState() {
-    const { roundFloat } = LocalPlayer;
+    const roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
     return this.body.map(({ x, y }) => [roundFloat(x), roundFloat(y)]);
   }
 }

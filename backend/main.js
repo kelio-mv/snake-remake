@@ -132,4 +132,3 @@ console.log("Server is running on port", port);
 // Fix CORS origin
 // We may need to warn players about their opponents' deaths
 // Maybe broadcast player apples on death, inside the same event
-// Maybe we should broadcast player state after collision checks to reduce lag
