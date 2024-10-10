@@ -24,13 +24,16 @@ function isNicknameInUse(nickname) {
 }
 
 function killPlayer(player) {
-  player.die();
-  player.socket.emit("player_respawn");
+  const { socket } = player;
+
+  player.kill();
+  socket.emit("player_kill");
+  socket.broadcast.emit("player_kill", player.nickname);
 
   if (player.appleCount > 0) {
     apples.add(player.apples);
-    player.socket.emit("apples_add", player.apples);
-    player.socket.broadcast.emit("apples_add", player.apples);
+    socket.emit("apples_add", player.apples);
+    socket.broadcast.emit("apples_add", player.apples);
   }
 }
 
@@ -55,8 +58,8 @@ io.on("connection", (socket) => {
   socket.on("disconnect", handleDisconnect);
 
   function handleConnection() {
-    getOpponents(player).forEach((opponent) => {
-      socket.emit("player_add", opponent.nickname, opponent.getState(), !opponent.protected);
+    getOpponents(player).forEach((opp) => {
+      socket.emit("player_add", opp.nickname, opp.dead, opp.getState(), !opp.protected);
     });
     socket.emit("apples_add", apples.getState());
     socket.broadcast.emit("player_add", player.nickname);
@@ -69,16 +72,22 @@ io.on("connection", (socket) => {
     }
     player.setState(state);
     socket.broadcast.emit("player", player.nickname, state);
+    // this is looking weird ngl
+    const killedOpponents = [];
 
     for (const opponent of getOpponents(player)) {
       if (!opponent.dead && !opponent.protected && opponent.collidePlayer(player)) {
         killPlayer(opponent);
+        killedOpponents.push(opponent);
       }
     }
 
     if (!player.protected) {
       for (const opponent of getOpponents(player)) {
-        if (player.collidePlayer(opponent)) {
+        if (
+          (!opponent.dead || killedOpponents.includes(opponent)) &&
+          player.collidePlayer(opponent)
+        ) {
           killPlayer(player);
           return;
         }
@@ -108,7 +117,7 @@ io.on("connection", (socket) => {
   }
 
   function handleRespawn() {
-    player.reset();
+    player.respawn();
     socket.broadcast.emit("player_respawn", player.nickname);
     socket.protectionTimeout = setProtectionTimeout();
   }
@@ -120,9 +129,9 @@ io.on("connection", (socket) => {
 
   function setProtectionTimeout() {
     return setTimeout(() => {
-      player.protected = false;
-      socket.emit("player_protection_end");
-      socket.broadcast.emit("player_protection_end", player.nickname);
+      player.disableProtection();
+      socket.emit("player_disable_protection");
+      socket.broadcast.emit("player_disable_protection", player.nickname);
     }, 1000 * SPAWN_PROTECTION_TIME);
   }
 });
@@ -130,5 +139,4 @@ io.on("connection", (socket) => {
 console.log("Server is running on port", port);
 
 // Fix CORS origin
-// We may need to warn players about their opponents' deaths
 // Maybe broadcast player apples on death, inside the same event

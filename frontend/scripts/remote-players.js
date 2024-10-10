@@ -3,11 +3,13 @@ import Player from "./player.js";
 const REMOTE_PLAYER_COLOR = "#fb923c";
 
 class RemotePlayer extends Player {
-  constructor(nickname, state, unprotected) {
+  constructor(nickname, dead, state, unprotected) {
     super(REMOTE_PLAYER_COLOR);
     this.nickname = nickname;
 
-    if (state) {
+    if (dead) {
+      this.kill();
+    } else if (state) {
       this.setState(state);
 
       if (unprotected) {
@@ -44,12 +46,16 @@ class RemotePlayers {
     this.get(nickname).setState(state);
   }
 
-  reset(nickname) {
-    this.get(nickname).reset();
-  }
-
   disableProtection(nickname) {
     this.get(nickname).disableProtection();
+  }
+
+  kill(nickname) {
+    this.get(nickname).kill();
+  }
+
+  respawn(nickname) {
+    this.get(nickname).respawn();
   }
 
   draw(ctx) {

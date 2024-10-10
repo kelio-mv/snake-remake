@@ -97,7 +97,11 @@ class Player {
     }
   }
 
-  die() {
+  disableProtection() {
+    this.protected = false;
+  }
+
+  kill() {
     this.dead = true;
 
     for (let i = 0; i < this.appleCount; i++) {
@@ -105,6 +109,10 @@ class Player {
       this.apples.push([tail.x, tail.y]);
       this.moveTail(1 / PLAYER_SPEED);
     }
+  }
+
+  respawn() {
+    this.reset();
   }
 
   getState() {

@@ -16,13 +16,26 @@ class Player {
     this.direction = "up";
     this.deltaLength = 3;
     this.protected = true;
+    this.dead = false;
   }
 
   disableProtection() {
     this.protected = false;
   }
 
+  kill() {
+    this.dead = true;
+  }
+
+  respawn() {
+    this.reset();
+  }
+
   draw(ctx) {
+    if (this.dead) {
+      return;
+    }
+
     const drawBody = (strokeStyle, lineWidth) => {
       ctx.strokeStyle = strokeStyle;
       ctx.lineWidth = lineWidth;
@@ -44,6 +57,7 @@ class Player {
       ctx.font = "1px 'Work Sans', system-ui, sans-serif";
       ctx.fillStyle = "#fff";
       ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
       ctx.fillText(this.nickname, head.x, head.y - 1);
     };
 
