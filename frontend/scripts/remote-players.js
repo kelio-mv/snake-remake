@@ -26,8 +26,8 @@ class RemotePlayer extends Player {
 class RemotePlayers {
   players = [];
 
-  add(nickname, state, unprotected) {
-    this.players.push(new RemotePlayer(nickname, state, unprotected));
+  add(nickname, dead, state, unprotected) {
+    this.players.push(new RemotePlayer(nickname, dead, state, unprotected));
   }
 
   remove(nickname) {
