@@ -72,31 +72,29 @@ io.on("connection", (socket) => {
     }
     player.setState(state);
     socket.broadcast.emit("player", player.nickname, state);
-    // this is looking weird ngl
-    const killedOpponents = [];
+
+    if (!player.protected) {
+      for (const opponent of getOpponents(player)) {
+        if (!opponent.dead && player.collidePlayer(opponent)) {
+          killPlayer(player);
+          break; // Don't return yet. We still need to check for opponent collisions
+        }
+      }
+    }
 
     for (const opponent of getOpponents(player)) {
       if (!opponent.dead && !opponent.protected && opponent.collidePlayer(player)) {
         killPlayer(opponent);
-        killedOpponents.push(opponent);
       }
     }
 
-    if (!player.protected) {
-      for (const opponent of getOpponents(player)) {
-        if (
-          (!opponent.dead || killedOpponents.includes(opponent)) &&
-          player.collidePlayer(opponent)
-        ) {
-          killPlayer(player);
-          return;
-        }
-      }
+    if (player.dead) {
+      return; // Now we can return if the player collided an opponent
+    }
 
-      if (player.collideItself()) {
-        killPlayer(player);
-        return;
-      }
+    if (!player.protected && player.collideItself()) {
+      killPlayer(player);
+      return;
     }
 
     if (player.collideEdges()) {

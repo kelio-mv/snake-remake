@@ -2,7 +2,6 @@ import { FIELD_SIZE } from "./constants.js";
 
 class RespawnOverlay {
   visible = false;
-  text = ("ontouchstart" in window ? "Toque na tela " : "Pressione uma tecla ") + "para renascer";
 
   setVisible(value) {
     this.visible = value;
@@ -22,7 +21,11 @@ class RespawnOverlay {
     ctx.fillStyle = "#fff";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(this.text, FIELD_SIZE / 2, FIELD_SIZE / 2);
+    ctx.fillText(
+      ("ontouchstart" in window ? "Toque na tela " : "Pressione uma tecla ") + "para renascer",
+      FIELD_SIZE / 2,
+      FIELD_SIZE / 2
+    );
   }
 }
 
