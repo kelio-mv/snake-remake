@@ -73,23 +73,20 @@ io.on("connection", (socket) => {
     player.setState(state);
     socket.broadcast.emit("player", player.nickname, state);
 
-    if (!player.protected) {
-      for (const opponent of getOpponents(player)) {
-        if (!opponent.dead && player.collidePlayer(opponent)) {
-          killPlayer(player);
-          break; // Don't return yet. We still need to check for opponent collisions
-        }
-      }
-    }
-
     for (const opponent of getOpponents(player)) {
-      if (!opponent.dead && !opponent.protected && opponent.collidePlayer(player)) {
+      if (opponent.dead) {
+        continue;
+      }
+      if (!player.dead && !player.protected && player.collidePlayer(opponent)) {
+        killPlayer(player);
+      }
+      if (!opponent.protected && opponent.collidePlayer(player)) {
         killPlayer(opponent);
       }
     }
 
     if (player.dead) {
-      return; // Now we can return if the player collided an opponent
+      return;
     }
 
     if (!player.protected && player.collideItself()) {
