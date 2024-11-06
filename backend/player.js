@@ -97,7 +97,7 @@ class Player {
     }
   }
 
-  disableProtection() {
+  unprotect() {
     this.protected = false;
   }
 

@@ -55,39 +55,43 @@ function stop() {
   cancelAnimationFrame(state.animationFrame);
   inputManager.removeEventListeners();
   localPlayer.reset();
-  remotePlayers.removeAll();
   respawnOverlay.setVisible(false);
-  apples.removeAll();
 }
 
 function setup() {
+  socket.on("initial_state", (_remotePlayers, _apples) => {
+    remotePlayers.setInitialState(_remotePlayers);
+    apples.setInitialState(_apples);
+  });
+
   socket.on("player", (nickname, state) => {
-    remotePlayers.setState(nickname, state);
+    remotePlayers.setPlayerState(nickname, state);
   });
 
-  socket.on("player_add", (nickname, dead, state, unprotected) => {
-    remotePlayers.add(nickname, dead, state, unprotected);
+  socket.on("player_join", (nickname) => {
+    remotePlayers.add(nickname);
   });
 
-  socket.on("player_remove", (nickname) => {
+  socket.on("player_leave", (nickname) => {
     remotePlayers.remove(nickname);
   });
 
-  socket.on("player_disable_protection", (nickname) => {
+  socket.on("player_unprotect", (nickname) => {
     if (nickname) {
-      remotePlayers.disableProtection(nickname);
+      remotePlayers.unprotect(nickname);
     } else {
-      localPlayer.disableProtection();
+      localPlayer.unprotect();
     }
   });
 
-  socket.on("player_kill", (nickname) => {
+  socket.on("player_die", (nickname, _apples) => {
     if (nickname) {
       remotePlayers.kill(nickname);
     } else {
       localPlayer.kill();
       respawnOverlay.setVisible(true);
     }
+    apples.add(_apples);
     sounds.playerCollide.play();
   });
 
@@ -95,17 +99,15 @@ function setup() {
     remotePlayers.respawn(nickname);
   });
 
-  socket.on("apples_add", (instances) => {
-    apples.add(instances);
-  });
-
-  socket.on("apples_remove", (appleIndex, subApple, grow) => {
+  socket.on("apple_eat", (appleIndex, subApple, grow) => {
     apples.remove(appleIndex, subApple);
     if (grow) {
       localPlayer.grow();
     }
     sounds.playerEat.play();
   });
+
+  socket.onAny(console.log);
 
   addEventListener("visibilitychange", () => {
     if (!document.hidden) {

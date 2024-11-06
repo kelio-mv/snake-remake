@@ -9,11 +9,13 @@ class RemotePlayer extends Player {
 
     if (dead) {
       this.kill();
-    } else if (state) {
+      return;
+    }
+    if (state) {
       this.setState(state);
 
       if (unprotected) {
-        this.disableProtection();
+        this.unprotect();
       }
     }
   }
@@ -26,28 +28,30 @@ class RemotePlayer extends Player {
 class RemotePlayers {
   players = [];
 
-  add(nickname, dead, state, unprotected) {
-    this.players.push(new RemotePlayer(nickname, dead, state, unprotected));
+  get(nickname) {
+    return this.players.find((player) => player.nickname === nickname);
+  }
+
+  setInitialState(players) {
+    this.players = players.map(
+      ([nickname, state, unprotected]) => new RemotePlayer(nickname, !state, state, unprotected)
+    );
+  }
+
+  setPlayerState(nickname, state) {
+    this.get(nickname).setState(state);
+  }
+
+  add(nickname) {
+    this.players.push(new RemotePlayer(nickname));
   }
 
   remove(nickname) {
     this.players = this.players.filter((player) => player.nickname !== nickname);
   }
 
-  removeAll() {
-    this.players = [];
-  }
-
-  get(nickname) {
-    return this.players.find((player) => player.nickname === nickname);
-  }
-
-  setState(nickname, state) {
-    this.get(nickname).setState(state);
-  }
-
-  disableProtection(nickname) {
-    this.get(nickname).disableProtection();
+  unprotect(nickname) {
+    this.get(nickname).unprotect();
   }
 
   kill(nickname) {

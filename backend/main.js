@@ -27,14 +27,9 @@ function killPlayer(player) {
   const { socket } = player;
 
   player.kill();
-  socket.emit("player_kill");
-  socket.broadcast.emit("player_kill", player.nickname);
-
-  if (player.appleCount > 0) {
-    apples.add(player.apples);
-    socket.emit("apples_add", player.apples);
-    socket.broadcast.emit("apples_add", player.apples);
-  }
+  apples.add(player.apples);
+  socket.emit("player_die", null, player.apples);
+  socket.broadcast.emit("player_die", player.nickname, player.apples);
 }
 
 io.use((socket, next) => {
@@ -58,11 +53,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", handleDisconnect);
 
   function handleConnection() {
-    getOpponents(player).forEach((opp) => {
-      socket.emit("player_add", opp.nickname, opp.dead, opp.getState(), !opp.protected);
-    });
-    socket.emit("apples_add", apples.getState());
-    socket.broadcast.emit("player_add", player.nickname);
+    const opponents = getOpponents(player).map((opp) =>
+      opp.dead ? [opp.nickname] : [opp.nickname, opp.getState(), !opp.protected]
+    );
+    socket.emit("initial_state", opponents, apples.getState());
+    socket.broadcast.emit("player_join", player.nickname);
     socket.protectionTimeout = setProtectionTimeout();
   }
 
@@ -105,8 +100,8 @@ io.on("connection", (socket) => {
         // A substitute apple is returned when the last apple is removed
         const subApple = apples.remove(index);
         player.incrementAppleCount();
-        socket.emit("apples_remove", index, subApple, true);
-        socket.broadcast.emit("apples_remove", index, subApple);
+        socket.emit("apple_eat", index, subApple, true);
+        socket.broadcast.emit("apple_eat", index, subApple);
       }
     }
   }
@@ -118,15 +113,15 @@ io.on("connection", (socket) => {
   }
 
   function handleDisconnect() {
-    socket.broadcast.emit("player_remove", player.nickname);
+    socket.broadcast.emit("player_leave", player.nickname);
     clearTimeout(socket.protectionTimeout);
   }
 
   function setProtectionTimeout() {
     return setTimeout(() => {
-      player.disableProtection();
-      socket.emit("player_disable_protection");
-      socket.broadcast.emit("player_disable_protection", player.nickname);
+      player.unprotect();
+      socket.emit("player_unprotect");
+      socket.broadcast.emit("player_unprotect", player.nickname);
     }, 1000 * SPAWN_PROTECTION_TIME);
   }
 });

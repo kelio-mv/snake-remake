@@ -19,7 +19,7 @@ class Player {
     this.dead = false;
   }
 
-  disableProtection() {
+  unprotect() {
     this.protected = false;
   }
 

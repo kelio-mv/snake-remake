@@ -6,8 +6,12 @@ const APPLE_BORDER_COLOR = "#000";
 class Apples {
   instances = [];
 
-  add(instances) {
-    this.instances.push(...instances.map(([x, y]) => ({ x, y })));
+  setInitialState(instances) {
+    this.instances = instances.map(([x, y]) => ({ x, y }));
+  }
+
+  add(playerApples) {
+    this.instances.push(...playerApples.map(([x, y]) => ({ x, y })));
   }
 
   remove(appleIndex, subApple) {
@@ -17,10 +21,6 @@ class Apples {
     } else {
       this.instances.splice(appleIndex, 1);
     }
-  }
-
-  removeAll() {
-    this.instances = [];
   }
 
   draw(ctx) {
