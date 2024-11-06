@@ -4,7 +4,14 @@ import Player from "./player.js";
 import { SPAWN_PROTECTION_TIME } from "./constants.js";
 
 const port = 3000;
-const io = new Server(port, { cors: { origin: "*" } });
+const productionEnv = true;
+const io = new Server(port, {
+  cors: {
+    origin: productionEnv
+      ? "https://snakeremake.vercel.app"
+      : ["http://127.0.0.1:5500", "http://192.168.1.5:5500"],
+  },
+});
 const apples = new Apples();
 
 function getSockets() {
@@ -127,6 +134,3 @@ io.on("connection", (socket) => {
 });
 
 console.log("Server is running on port", port);
-
-// Fix CORS origin
-// Maybe broadcast player apples on death, inside the same event

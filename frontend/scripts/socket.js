@@ -4,7 +4,7 @@ import nicknameInput from "./main.js";
 const socket = io("wss://snake-remake.glitch.me", {
   autoConnect: false,
   auth: (cb) => cb({ nickname: nicknameInput.value }),
-  transports: ["websocket"],
+  // using transports: ["websocket"] will disable cors
 });
 
 export default socket;
