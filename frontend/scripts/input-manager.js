@@ -12,6 +12,7 @@ const DIRECTION_BY_KEY = {
   KeyD: "right",
 };
 const DIRECTION_KEYS = Object.keys(DIRECTION_BY_KEY);
+const SWIPE_THRESHOLD = 12;
 
 class InputManager {
   handleKeyDown = this.handleKeyDown.bind(this);
@@ -52,20 +53,19 @@ class InputManager {
   }
 
   handleTouchMove(e) {
-    if (this.touchStart === null) {
-      return;
-    }
-
     const touch = e.touches[0];
     const [deltaX, deltaY] = [touch.clientX - this.touchStart.x, touch.clientY - this.touchStart.y];
+    const swipeDistance = Math.hypot(deltaX, deltaY);
 
+    if (swipeDistance < SWIPE_THRESHOLD) {
+      return;
+    }
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       localPlayer.setDirection(deltaX < 0 ? "left" : "right");
-    } else {
+    } else if (Math.abs(deltaX) < Math.abs(deltaY)) {
       localPlayer.setDirection(deltaY < 0 ? "up" : "down");
     }
-
-    this.touchStart = null;
+    this.touchStart = { x: touch.clientX, y: touch.clientY };
   }
 
   handleRespawn() {

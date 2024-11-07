@@ -124,7 +124,6 @@ setup();
 
 export { start as startGame, stop as stopGame, localPlayer, respawnOverlay };
 
-// improve controls for mobile
 // make a respawn button instead?
 // try different colors for players
 // try different spawn points
@@ -132,4 +131,5 @@ export { start as startGame, stop as stopGame, localPlayer, respawnOverlay };
 // unify constants and classes between client and server
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
+// modules should export objects instead of classes
 // review all the code
