@@ -124,7 +124,6 @@ setup();
 
 export { start as startGame, stop as stopGame, localPlayer, respawnOverlay };
 
-// make a respawn button instead?
 // try different colors for players
 // try different spawn points
 // credits and tutorial

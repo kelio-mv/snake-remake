@@ -1,6 +1,7 @@
 import { FIELD_SIZE } from "./constants.js";
 
 const PLAYER_SPEED = 10;
+const NET_FLOAT_PRECISION = 2;
 
 class Player {
   constructor(socket, nickname) {
@@ -15,7 +16,6 @@ class Player {
       { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
     ];
     this.direction = "up";
-    this.deltaLength = 3;
     this.protected = true;
     this.dead = false;
     this.appleCount = 0;
@@ -103,10 +103,11 @@ class Player {
 
   kill() {
     this.dead = true;
+    const roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
 
     for (let i = 0; i < this.appleCount; i++) {
       const tail = this.body[0];
-      this.apples.push([tail.x, tail.y]);
+      this.apples.push([roundFloat(tail.x), roundFloat(tail.y)]);
       this.moveTail(1 / PLAYER_SPEED);
     }
   }

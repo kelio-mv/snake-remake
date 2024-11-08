@@ -70,23 +70,23 @@ class LocalPlayer extends Player {
 
   handleGrowth(deltaTime) {
     const deltaPos = deltaTime * PLAYER_SPEED;
-    this.deltaLength -= deltaPos;
+    this.lengthToGrow -= deltaPos;
 
-    if (this.deltaLength < 0) {
-      const remainingTime = -this.deltaLength / PLAYER_SPEED;
+    if (this.lengthToGrow < 0) {
+      const remainingTime = -this.lengthToGrow / PLAYER_SPEED;
       this.moveTail(remainingTime);
-      this.deltaLength = 0;
+      this.lengthToGrow = 0;
     }
   }
 
   grow() {
-    this.deltaLength += 1;
+    this.lengthToGrow += 1;
   }
 
   update(deltaTime) {
     this.moveHead(deltaTime);
 
-    if (this.deltaLength > 0) {
+    if (this.lengthToGrow > 0) {
       this.handleGrowth(deltaTime);
     } else {
       this.moveTail(deltaTime);

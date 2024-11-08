@@ -7,14 +7,14 @@ class Player {
   }
 
   reset() {
-    // should direction and deltaLength get moved to localPlayer?
+    // should direction and lengthToGrow get moved to localPlayer?
     // create shared constants for these attributes or shared classes?
     this.body = [
       { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
       { x: FIELD_SIZE / 2, y: FIELD_SIZE - 0.5 },
     ];
     this.direction = "up";
-    this.deltaLength = 3;
+    this.lengthToGrow = 3;
     this.protected = true;
     this.dead = false;
   }
