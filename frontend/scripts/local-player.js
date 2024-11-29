@@ -53,7 +53,7 @@ class LocalPlayer extends Player {
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) || Math.abs(target.y - tail.y);
     const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
-    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
+    const timeLeft = deltaTime - deltaPos / PLAYER_SPEED;
     const [deltaX, deltaY] = [
       deltaPos * Math.sign(target.x - tail.x),
       deltaPos * Math.sign(target.y - tail.y),
@@ -64,7 +64,7 @@ class LocalPlayer extends Player {
 
     if (tail.x === target.x && tail.y === target.y) {
       this.body.shift();
-      this.moveTail(remainingTime);
+      this.moveTail(timeLeft);
     }
   }
 
@@ -73,8 +73,8 @@ class LocalPlayer extends Player {
     this.lengthToGrow -= deltaPos;
 
     if (this.lengthToGrow < 0) {
-      const remainingTime = -this.lengthToGrow / PLAYER_SPEED;
-      this.moveTail(remainingTime);
+      const timeLeft = -this.lengthToGrow / PLAYER_SPEED;
+      this.moveTail(timeLeft);
       this.lengthToGrow = 0;
     }
   }
