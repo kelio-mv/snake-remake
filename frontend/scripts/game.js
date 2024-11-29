@@ -107,8 +107,6 @@ function setup() {
     sounds.playerEat.play();
   });
 
-  socket.onAny(console.log);
-
   addEventListener("visibilitychange", () => {
     if (!document.hidden) {
       // Prevent player from teleporting to avoid unfair collisions for their opponents
@@ -125,10 +123,9 @@ setup();
 export { start as startGame, stop as stopGame, localPlayer, respawnOverlay };
 
 // try different colors for players
-// try different spawn points
 // credits and tutorial
 // unify constants and classes between client and server
+// modules should export objects instead of classes
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
-// modules should export objects instead of classes
 // review all the code
