@@ -29,4 +29,6 @@ class RespawnOverlay {
   }
 }
 
-export default RespawnOverlay;
+const respawnOverlay = new RespawnOverlay();
+
+export default respawnOverlay;

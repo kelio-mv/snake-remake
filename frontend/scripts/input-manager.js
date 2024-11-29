@@ -1,4 +1,5 @@
-import { localPlayer, respawnOverlay } from "./game.js";
+import localPlayer from "./local-player.js";
+import respawnOverlay from "./respawn-overlay.js";
 import socket from "./socket.js";
 
 const DIRECTION_BY_KEY = {
@@ -79,4 +80,6 @@ class InputManager {
   }
 }
 
-export default InputManager;
+const inputManager = new InputManager();
+
+export default inputManager;

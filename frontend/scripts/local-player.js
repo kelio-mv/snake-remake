@@ -99,4 +99,6 @@ class LocalPlayer extends Player {
   }
 }
 
-export default LocalPlayer;
+const localPlayer = new LocalPlayer();
+
+export default localPlayer;

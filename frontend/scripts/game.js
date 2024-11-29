@@ -1,21 +1,15 @@
-import Background from "./background.js";
-import LocalPlayer from "./local-player.js";
-import RemotePlayers from "./remote-players.js";
-import Apples from "./apples.js";
-import RespawnOverlay from "./respawn-overlay.js";
-import InputManager from "./input-manager.js";
+import background from "./background.js";
+import localPlayer from "./local-player.js";
+import remotePlayers from "./remote-players.js";
+import apples from "./apples.js";
+import respawnOverlay from "./respawn-overlay.js";
+import inputManager from "./input-manager.js";
 import socket from "./socket.js";
 import sounds from "./sounds.js";
 import { FIELD_SIZE } from "./constants.js";
 
 const canvas = document.querySelector(".game-canvas");
 const ctx = canvas.getContext("2d");
-const background = new Background();
-const localPlayer = new LocalPlayer();
-const remotePlayers = new RemotePlayers();
-const apples = new Apples();
-const respawnOverlay = new RespawnOverlay();
-const inputManager = new InputManager();
 const state = { lastUpdate: null, animationFrame: null };
 
 function resize() {
@@ -120,12 +114,11 @@ function setup() {
 
 setup();
 
-export { start as startGame, stop as stopGame, localPlayer, respawnOverlay };
+export { start as startGame, stop as stopGame };
 
 // try different colors for players
 // credits and tutorial
 // unify constants and classes between client and server
-// modules should export objects instead of classes
 // decide how to properly handle disconnections and reconnections
 // decide how to properly optimize data transfer in order to reduce lag
 // review all the code

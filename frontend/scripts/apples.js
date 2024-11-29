@@ -38,4 +38,6 @@ class Apples {
   }
 }
 
-export default Apples;
+const apples = new Apples();
+
+export default apples;

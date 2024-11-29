@@ -67,4 +67,6 @@ class RemotePlayers {
   }
 }
 
-export default RemotePlayers;
+const remotePlayers = new RemotePlayers();
+
+export default remotePlayers;

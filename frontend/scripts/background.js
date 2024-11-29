@@ -11,4 +11,6 @@ class Background {
   }
 }
 
-export default Background;
+const background = new Background();
+
+export default background;
