@@ -33,6 +33,10 @@ class InputManager {
   }
 
   handleKeyDown(e) {
+    if (e.key === "Unidentified") {
+      return;
+    }
+
     if (respawnOverlay.visible) {
       this.handleRespawn();
     }
