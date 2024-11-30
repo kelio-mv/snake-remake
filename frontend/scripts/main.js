@@ -25,6 +25,10 @@ homeNicknameInput.addEventListener("input", () => {
   homeNicknameInput.setCustomValidity("");
 });
 
+homeJoinButton.addEventListener("click", () => {
+  homeJoinButton.setCustomValidity("");
+});
+
 homeForm.addEventListener("submit", (e) => {
   e.preventDefault();
   homeNicknameInput.disabled = true;
@@ -43,14 +47,19 @@ socket.on("connect", () => {
 });
 
 socket.on("connect_error", (err) => {
+  homeNicknameInput.disabled = false;
+  homeJoinButton.disabled = false;
+  homeJoinLabel.hidden = false;
+  homeJoinLoader.hidden = true;
+  sounds.connectionError.play();
+
   if (err.message === "login error") {
-    homeNicknameInput.disabled = false;
     homeNicknameInput.setCustomValidity("Este nome de usuário já está em uso.");
     homeNicknameInput.reportValidity();
-    homeJoinButton.disabled = false;
-    homeJoinLabel.hidden = false;
-    homeJoinLoader.hidden = true;
-    sounds.connectionError.play();
+  } else {
+    homeJoinButton.setCustomValidity("Não foi possível conectar-se ao servidor.");
+    homeJoinButton.reportValidity();
+    socket.close();
   }
 });
 
