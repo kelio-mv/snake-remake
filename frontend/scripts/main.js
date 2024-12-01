@@ -14,6 +14,13 @@ const sounds = {
   connectionError: new Audio("sounds/connection-error.ogg"),
 };
 
+function resetForm() {
+  homeNicknameInput.disabled = false;
+  homeJoinButton.disabled = false;
+  homeJoinLabel.hidden = false;
+  homeJoinLoader.hidden = true;
+}
+
 homePage.style.setProperty("--bg-light-color", BG_LIGHT_COLOR);
 homePage.style.setProperty("--bg-dark-color", BG_DARK_COLOR);
 homePage.style.setProperty("--field-size", FIELD_SIZE);
@@ -47,10 +54,7 @@ socket.on("connect", () => {
 });
 
 socket.on("connect_error", (err) => {
-  homeNicknameInput.disabled = false;
-  homeJoinButton.disabled = false;
-  homeJoinLabel.hidden = false;
-  homeJoinLoader.hidden = true;
+  resetForm();
   sounds.connectionError.play();
 
   if (err.message === "login error") {
@@ -59,15 +63,16 @@ socket.on("connect_error", (err) => {
   } else {
     homeJoinButton.setCustomValidity("Não foi possível conectar-se ao servidor.");
     homeJoinButton.reportValidity();
-    socket.close();
   }
 });
 
 socket.on("disconnect", () => {
   stopGame();
-  homePage.hidden = false;
+  resetForm();
   gamePage.hidden = true;
+  homePage.hidden = false;
   sounds.connectionError.play();
+  alert("A conexão ao servidor foi perdida.");
 });
 
 export default homeNicknameInput;

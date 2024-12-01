@@ -119,6 +119,6 @@ export { start as startGame, stop as stopGame };
 // try different colors for players
 // credits and tutorial
 // unify constants and classes between client and server
-// decide how to properly handle disconnections and reconnections
+// create an alert box instead of using window.alert on connection lose
 // decide how to properly optimize data transfer in order to reduce lag
 // review all the code
