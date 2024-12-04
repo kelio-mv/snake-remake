@@ -1,5 +1,5 @@
-const FIELD_SIZE = 40;
-const BORDER_WIDTH = 1 / 8; // 2.25px in 720p (720 / 40 / 8)
+const FIELD_SIZE = 36;
+const BORDER_WIDTH = 1 / 8; // 2.5px in 720p (720 / 36 / 8)
 const BG_LIGHT_COLOR = "#16a34a";
 const BG_DARK_COLOR = "#149945";
 
