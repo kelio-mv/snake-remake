@@ -101,14 +101,24 @@ class Player {
     this.protected = false;
   }
 
+  debug() {
+    const expected = 3 + this.appleCount;
+    const real = this.getLength();
+    const delta = expected - real;
+    console.log("Expected:", expected, "Real:", real, "Delta:", delta);
+  }
+
   kill() {
+    this.debug();
     this.dead = true;
     const roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
 
     for (let i = 0; i < this.appleCount; i++) {
+      if (i > 0) {
+        this.moveTail(1 / PLAYER_SPEED);
+      }
       const tail = this.body[0];
       this.apples.push([roundFloat(tail.x), roundFloat(tail.y)]);
-      this.moveTail(1 / PLAYER_SPEED);
     }
   }
 
