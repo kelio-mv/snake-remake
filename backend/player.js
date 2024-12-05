@@ -69,15 +69,6 @@ class Player {
     this.appleCount += 1;
   }
 
-  getLength() {
-    // Do we still need this?
-    return this.body.slice(0, -1).reduce((length, point, index) => {
-      const nextPoint = this.body[index + 1];
-      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
-      return length + (Math.abs(deltaX) || Math.abs(deltaY));
-    }, 0);
-  }
-
   moveTail(deltaTime) {
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) || Math.abs(target.y - tail.y);
@@ -92,18 +83,16 @@ class Player {
     tail.y += deltaY;
 
     if (tail.x === target.x && tail.y === target.y) {
-      this.body.shift();
-      /**
-       * This condition prevents losing the apple when the tail moves directly to the head,
-       * which is the last place an apple can be placed.
-       * The apple would be lost because the tail no longer has a target,
-       * causing the function to throw an error.
-       * This error is intended to be thrown when the tail needs to pass the head to move,
-       * which could place apples outside the game field.
-       */
-      if (timeLeft > 0) {
-        this.moveTail(timeLeft);
+      if (this.body.length === 2) {
+        /**
+         * This condition prevents an error that occurs when the tail moves onto the head.
+         * This only happens when the apples need all the space across the body, either because
+         * they fit perfectly or because they had their gap reduced.
+         */
+        return;
       }
+      this.body.shift();
+      this.moveTail(timeLeft);
     }
   }
 
@@ -111,29 +100,30 @@ class Player {
     this.protected = false;
   }
 
-  debugLength() {
-    const ideal = 3 + this.appleCount;
-    const real = this.getLength();
-    const delta = ideal - real;
-    console.log("Ideal:", ideal, "Real:", real, "Delta:", delta);
+  getLength() {
+    return this.body.slice(0, -1).reduce((length, point, index) => {
+      const nextPoint = this.body[index + 1];
+      const [deltaX, deltaY] = [nextPoint.x - point.x, nextPoint.y - point.y];
+      return length + (Math.abs(deltaX) || Math.abs(deltaY));
+    }, 0);
   }
 
   kill() {
     this.dead = true;
+    // Please, replace hard-coded values with constants
     const roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
+    const idealLength = 3 + this.appleCount;
+    const realLength = this.getLength();
+    /**
+     * Reduce the gap between apples to fit them across the body, when there isn't enough space.
+     * This is a better solution to the server crash problem, as it doesn't dismiss apples like
+     * the previous one did.
+     */
+    const appleGap = idealLength - realLength > 3 + 1 ? realLength / (this.appleCount - 1) : 1;
 
     for (let i = 0; i < this.appleCount; i++) {
       if (i > 0) {
-        try {
-          this.moveTail(1 / PLAYER_SPEED);
-        } catch {
-          /**
-           * This prevents the server from crashing when the tail passes the head by dismissing
-           * the remaining apples. However, this may still not be the ideal.
-           * Choose either to dismiss apples or reduce the gap between apples to avoid this bug.
-           */
-          break;
-        }
+        this.moveTail(appleGap / PLAYER_SPEED);
       }
       const tail = this.body[0];
       this.apples.push([roundFloat(tail.x), roundFloat(tail.y)]);
