@@ -82,7 +82,7 @@ class Player {
     const [tail, target] = this.body;
     const targetDist = Math.abs(target.x - tail.x) || Math.abs(target.y - tail.y);
     const deltaPos = Math.min(deltaTime * PLAYER_SPEED, targetDist);
-    const remainingTime = deltaTime - deltaPos / PLAYER_SPEED;
+    const timeLeft = deltaTime - deltaPos / PLAYER_SPEED;
     const [deltaX, deltaY] = [
       deltaPos * Math.sign(target.x - tail.x),
       deltaPos * Math.sign(target.y - tail.y),
@@ -93,7 +93,17 @@ class Player {
 
     if (tail.x === target.x && tail.y === target.y) {
       this.body.shift();
-      this.moveTail(remainingTime);
+      /**
+       * This condition prevents losing the apple when the tail moves directly to the head,
+       * which is the last place an apple can be placed.
+       * The apple would be lost because the tail no longer has a target,
+       * causing the function to throw an error.
+       * This error is intended to be thrown when the tail needs to pass the head to move,
+       * which could place apples outside the game field.
+       */
+      if (timeLeft > 0) {
+        this.moveTail(timeLeft);
+      }
     }
   }
 
@@ -101,21 +111,29 @@ class Player {
     this.protected = false;
   }
 
-  debug() {
-    const expected = 3 + this.appleCount;
+  debugLength() {
+    const ideal = 3 + this.appleCount;
     const real = this.getLength();
-    const delta = expected - real;
-    console.log("Expected:", expected, "Real:", real, "Delta:", delta);
+    const delta = ideal - real;
+    console.log("Ideal:", ideal, "Real:", real, "Delta:", delta);
   }
 
   kill() {
-    this.debug();
     this.dead = true;
     const roundFloat = (number) => parseFloat(number.toFixed(NET_FLOAT_PRECISION));
 
     for (let i = 0; i < this.appleCount; i++) {
       if (i > 0) {
-        this.moveTail(1 / PLAYER_SPEED);
+        try {
+          this.moveTail(1 / PLAYER_SPEED);
+        } catch {
+          /**
+           * This prevents the server from crashing when the tail passes the head by dismissing
+           * the remaining apples. However, this may still not be the ideal.
+           * Choose either to dismiss apples or reduce the gap between apples to avoid this bug.
+           */
+          break;
+        }
       }
       const tail = this.body[0];
       this.apples.push([roundFloat(tail.x), roundFloat(tail.y)]);
