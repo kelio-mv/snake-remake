@@ -116,9 +116,10 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
+// maybe also use alert for connect_error
 // try different colors for players
 // credits and tutorial
 // unify constants and classes between client and server
-// create an alert box instead of using window.alert on connection lose
 // decide how to properly optimize data transfer in order to reduce lag
+// create bots for the game
 // review all the code

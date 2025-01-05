@@ -48,10 +48,14 @@ body {
   margin-bottom: 3rem;
 }
 
+.home-form {
+  margin-bottom: 1rem;
+}
+
 .home-nickname-input,
 .home-join-button {
-  width: 12rem;
-  height: 2rem;
+  width: 13.5rem;
+  height: 2.125rem;
   border: 1px solid #052e16;
   border-radius: 0.25rem;
 }
@@ -85,6 +89,18 @@ body {
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.home-error-alert {
+  width: 13.5rem;
+  padding: 0.5rem;
+  background-color: #991b1b;
+  border: 1px solid #450a0a;
+  border-radius: 0.25rem;
+}
+
+.home-error-alert > * {
+  vertical-align: middle;
 }
 
 .game-page {

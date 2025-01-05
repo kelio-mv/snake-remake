@@ -8,6 +8,7 @@ const homeNicknameInput = document.querySelector(".home-nickname-input");
 const homeJoinButton = document.querySelector(".home-join-button");
 const homeJoinLabel = document.querySelector(".home-join-label");
 const homeJoinLoader = document.querySelector(".home-join-loader");
+const homeErrorAlert = document.querySelector(".home-error-alert");
 const gamePage = document.querySelector(".game-page");
 const sounds = {
   buttonClick: new Audio("sounds/button-click.ogg"),
@@ -71,8 +72,8 @@ socket.on("disconnect", () => {
   resetForm();
   gamePage.hidden = true;
   homePage.hidden = false;
+  homeErrorAlert.hidden = false;
   sounds.connectionError.play();
-  alert("A conexão ao servidor foi perdida.");
 });
 
 export default homeNicknameInput;
