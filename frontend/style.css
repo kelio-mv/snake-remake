@@ -99,7 +99,8 @@ body {
   border-radius: 0.25rem;
 }
 
-.home-error-alert > * {
+.home-error-icon,
+.home-error-message {
   vertical-align: middle;
 }
 

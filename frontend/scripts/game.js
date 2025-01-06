@@ -116,7 +116,6 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
-// maybe also use alert for connect_error
 // try different colors for players
 // credits and tutorial
 // unify constants and classes between client and server

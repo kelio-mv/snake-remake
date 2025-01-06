@@ -9,6 +9,7 @@ const homeJoinButton = document.querySelector(".home-join-button");
 const homeJoinLabel = document.querySelector(".home-join-label");
 const homeJoinLoader = document.querySelector(".home-join-loader");
 const homeErrorAlert = document.querySelector(".home-error-alert");
+const homeErrorMessage = document.querySelector(".home-error-message");
 const gamePage = document.querySelector(".game-page");
 const sounds = {
   buttonClick: new Audio("sounds/button-click.ogg"),
@@ -31,10 +32,6 @@ homeNicknameInput.value = localStorage.getItem("nickname");
 homeNicknameInput.addEventListener("input", () => {
   homeNicknameInput.value = homeNicknameInput.value.replace(/[^a-zA-Z0-9_]/g, "");
   homeNicknameInput.setCustomValidity("");
-});
-
-homeJoinButton.addEventListener("click", () => {
-  homeJoinButton.setCustomValidity("");
 });
 
 homeForm.addEventListener("submit", (e) => {
@@ -62,8 +59,8 @@ socket.on("connect_error", (err) => {
     homeNicknameInput.setCustomValidity("Este nome de usuário já está em uso.");
     homeNicknameInput.reportValidity();
   } else {
-    homeJoinButton.setCustomValidity("Não foi possível conectar-se ao servidor.");
-    homeJoinButton.reportValidity();
+    homeErrorMessage.textContent = "Não foi possível conectar-se ao servidor.";
+    homeErrorAlert.hidden = false;
   }
 });
 
@@ -72,6 +69,7 @@ socket.on("disconnect", () => {
   resetForm();
   gamePage.hidden = true;
   homePage.hidden = false;
+  homeErrorMessage.textContent = "A conexão ao servidor foi perdida.";
   homeErrorAlert.hidden = false;
   sounds.connectionError.play();
 });
