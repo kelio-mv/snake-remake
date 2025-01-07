@@ -104,6 +104,18 @@ body {
   vertical-align: middle;
 }
 
+.home-credits {
+  position: fixed;
+  bottom: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #166534;
+  border-radius: 9999px;
+}
+
+.home-author-link {
+  color: white;
+}
+
 .game-page {
   display: flex;
   justify-content: center;

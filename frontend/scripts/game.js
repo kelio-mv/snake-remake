@@ -116,9 +116,9 @@ setup();
 
 export { start as startGame, stop as stopGame };
 
+// tutorial
 // try different colors for players
-// credits and tutorial
 // unify constants and classes between client and server
-// decide how to properly optimize data transfer in order to reduce lag
-// create bots for the game
+// reduce congestion by limiting the update rate (will need input prediction)
 // review all the code
+// create bots for the game
